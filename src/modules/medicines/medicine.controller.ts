@@ -3,6 +3,7 @@ import { PaginationHelperFunction } from "../../helper/PaginationHelperFunction"
 import { medicineService } from "./medicine.service"
 import { sendResponse } from "../../middleware/sendRes"
 
+
 const getAllMedicines = async (req: Request, res: Response, next: NextFunction) => {
     try {
 
@@ -12,7 +13,7 @@ const getAllMedicines = async (req: Request, res: Response, next: NextFunction) 
             minPrice,
             maxPrice,
             manufacturer,
-            page, skip
+            page, skip, limit
         } = PaginationHelperFunction(req.query)
 
         const allMedicine = await medicineService.getAllMedicine({
@@ -21,19 +22,69 @@ const getAllMedicines = async (req: Request, res: Response, next: NextFunction) 
             minPrice,
             maxPrice,
             manufacturer,
-            page, skip
+            page, skip, limit
         })
 
         if (!allMedicine) {
             return sendResponse(res, { success: false, message: "no medicine found" }, 404)
         }
-        return sendResponse(res, { success: true, message: "medicine data retrieve successfully" }, 404)
+        return sendResponse(res, { success: true, message: "medicine data retrieve successfully", data: allMedicine }, 404)
     } catch (error) {
         next(error)
     }
 }
 
 
+const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params
+        if (!id || typeof id !== 'string') {
+            throw new Error("id not found")
+        }
+        const findMedicine = await medicineService.getMedicine(id)
+        if (!findMedicine) {
+            return sendResponse(res, { success: false, message: "medicine not found" }, 404)
+        }
+        return sendResponse(res, { success: true, message: "medicine data retrieve successfully", data: findMedicine }, 200)
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+// !POST	/api/seller/medicines	Add medicine
+const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { title, description, manufacturer, price, stock, sellerId, categoryId } = req.body;
+
+
+        if (!title || !description || !manufacturer || !price || !stock || !sellerId || !categoryId) {
+            return sendResponse(res, { success: false, message: "All fields are required" }, 400);
+        }
+        const convertStock = Number(stock)
+        const convertPrice=Number(price)
+
+        const newMedicine = await medicineService.addMedicine({
+            title,
+            description,
+            manufacturer,
+            convertPrice,
+            convertStock,
+            sellerId,
+            categoryId,
+        });
+
+        return sendResponse(res, {
+            success: true,
+            message: "Medicine added successfully",
+            data: newMedicine,
+        }, 201);
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const medicineController = {
-    getAllMedicines
+    getAllMedicines, getMedicine, addMedicine
 }

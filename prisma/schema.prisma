@@ -101,13 +101,13 @@ model Profile {
   bio         String?
   dateOfBirth DateTime?
   userId      String    @unique
-  userRef     User      @relation(fields: [userId], references: [id])
+  userRef     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Order {
   id         String       @id @default(uuid())
   userId     String
-  userRef    User         @relation(fields: [userId], references: [id])
+  userRef    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   address    String       @db.VarChar(255)
   status     ORDER_STATUS @default(PLACED)
   createdAt  DateTime     @default(now())
@@ -121,9 +121,9 @@ model Order {
 model Order_item {
   id           String   @id @default(uuid())
   orderId      String
-  userOrderRef Order    @relation(fields: [orderId], references: [id])
+  userOrderRef Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   medicineId   String
-  medicineRef  Medicine @relation(fields: [medicineId], references: [id])
+  medicineRef  Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
   price        Decimal
   quantity     Int
   reviews      Review[]
@@ -141,9 +141,9 @@ model Medicine {
   price        Decimal
   stock        Int
   sellerId     String
-  sellerRef    User         @relation(fields: [sellerId], references: [id])
+  sellerRef    User         @relation(fields: [sellerId], references: [id], onDelete: Cascade)
   categoryId   String
-  categoryRef  Category     @relation(fields: [categoryId], references: [id])
+  categoryRef  Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   orderItems   Order_item[]
   reviews      Review[]
 
@@ -154,7 +154,7 @@ model Medicine {
 
 model Category {
   id            String     @id @default(uuid())
-  category_name String
+  category_name String @unique
   medicines     Medicine[]
 
   @@map("category")
@@ -164,11 +164,11 @@ model Review {
   id            String     @id @default(uuid())
   content       String
   medicineId    String
-  medicineRef   Medicine   @relation(fields: [medicineId], references: [id])
+  medicineRef   Medicine   @relation(fields: [medicineId], references: [id], onDelete: Cascade)
   userId        String
-  userRef       User       @relation(fields: [userId], references: [id])
+  userRef       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   order_itemId  String
-  order_itemRef Order_item @relation(fields: [order_itemId], references: [id])
+  order_itemRef Order_item @relation(fields: [order_itemId], references: [id], onDelete: Cascade)
 
   @@index([medicineId])
   @@index([userId])

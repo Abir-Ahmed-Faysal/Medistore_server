@@ -1,3 +1,5 @@
+import { IOutputOptions } from "../types/paginationHelper";
+
 type IOptions = {
     search?: string,
     category?: string,
@@ -7,25 +9,17 @@ type IOptions = {
     page?: string;
 }
 
-type IOutputOptions = {
-    search?: string|undefined,
-    category?: string,
-    minPrice?: number,
-    maxPrice?: number;
-    manufacturer?: string;
-    page?: number;
-    skip?: number
-}
+
 
 //!  /api/medicines?search=napa&category=painkiller&minPrice=50&maxPrice=200&manufacturer=Square
 
 
 export const PaginationHelperFunction = (option: IOptions): IOutputOptions => {
     const search = option.search || undefined
-    const category = option.category || ""
+    const category = option.category || undefined
     const minPrice = Math.ceil(Number(option.minPrice) || 1)
     const maxPrice = Number(option.maxPrice) || 50
-    const manufacturer = option.manufacturer || ""
+    const manufacturer = option.manufacturer || undefined
     const page = Number(option.page) || 1
 
 
@@ -43,7 +37,7 @@ export const PaginationHelperFunction = (option: IOptions): IOutputOptions => {
         minPrice,
         maxPrice,
         manufacturer,
-        page, skip
+        page, skip,limit
     }
 
 
