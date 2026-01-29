@@ -52,7 +52,7 @@ const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 
-// !POST	/api/seller/medicines	Add medicine
+
 const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { title, description, manufacturer, price, stock, sellerId, categoryId } = req.body;
@@ -88,7 +88,9 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
     try {
         const { id } = req.params;
         const payload = req.body;
-
+        if (!id || typeof id !== "string" || !payload) {
+            throw new Error("id updated data not found")
+        }
         const result = await medicineService.updateMedicine(id, payload);
 
         sendResponse(res, {
@@ -102,6 +104,9 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
 };
 
 
+
+
+
 export const medicineController = {
-    getAllMedicines, getMedicine, addMedicine,updateMedicine
+    getAllMedicines, getMedicine, addMedicine, updateMedicine
 }
