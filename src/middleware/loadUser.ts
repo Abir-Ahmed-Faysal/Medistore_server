@@ -1,10 +1,14 @@
-import { Request, Response, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import { prisma } from "../lib/prisma";
 import { TypeUserRole } from "../types/userRole";
+import { AuthenticatedRequest } from "../types/authRequest";
 
-export const loadUser = async (req: Request, res: Response, next: NextFunction) => {
+export const loadUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+
+  //!auth middleware is needed
+  
   try {
- 
+
     if (!req?.user || !req.user.email) {
       return res.status(403).json({
         message: "Unauthorized",
@@ -17,7 +21,7 @@ export const loadUser = async (req: Request, res: Response, next: NextFunction) 
       select: {
         id: true,
         role: true,
-        banned: true, 
+        banned: true,
       },
     });
 
@@ -34,11 +38,11 @@ export const loadUser = async (req: Request, res: Response, next: NextFunction) 
 
 
     req.user = {
-  ...req.user,
-  role: dbUser.role as TypeUserRole,
-  banned: dbUser.banned as boolean,   
-  id: dbUser.id,
-};
+      ...req.user,
+      role: dbUser.role as TypeUserRole,
+      banned: dbUser.banned as boolean,
+      id: dbUser.id,
+    };
 
     next();
   } catch (error) {

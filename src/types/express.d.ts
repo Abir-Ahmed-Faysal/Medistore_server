@@ -10,7 +10,7 @@ declare global {
         email: string;
         name?: string;
         role: TypeUserRole;
-        banned?:boolean
+        banned:boolean
       };
     }
   }
