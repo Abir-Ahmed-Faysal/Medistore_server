@@ -1,3 +1,4 @@
+import { Medicine } from "../../generated/client";
 import { MedicineWhereInput } from "../../generated/models"
 import { prisma } from "../../lib/prisma"
 
@@ -158,10 +159,19 @@ const addMedicine = async ({ title,
     })
 }
 
-const 
+const updateMedicine = async (
+    id: string,
+    payload: Omit<Medicine, "id">
+): Promise<Medicine> => {
+    const result = await prisma.medicine.update({
+        where: { id },
+        data: payload,
+    });
 
+    return result;
+};
 
 
 export const medicineService = {
-    getAllMedicine, getMedicine, addMedicine
+    getAllMedicine, getMedicine, addMedicine, updateMedicine
 }

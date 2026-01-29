@@ -62,7 +62,7 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
             return sendResponse(res, { success: false, message: "All fields are required" }, 400);
         }
         const convertStock = Number(stock)
-        const convertPrice=Number(price)
+        const convertPrice = Number(price)
 
         const newMedicine = await medicineService.addMedicine({
             title,
@@ -84,7 +84,24 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+const updateMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const payload = req.body;
+
+        const result = await medicineService.updateMedicine(id, payload);
+
+        sendResponse(res, {
+            success: true,
+            message: "Medicine updated successfully",
+            data: result,
+        }, 200);
+    } catch (error) {
+        next(error)
+    }
+};
+
 
 export const medicineController = {
-    getAllMedicines, getMedicine, addMedicine
+    getAllMedicines, getMedicine, addMedicine,updateMedicine
 }
