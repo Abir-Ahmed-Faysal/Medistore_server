@@ -12,7 +12,7 @@ export const auth = (...roles: UserRole[]) => {
       const session = await betterAuth.api.getSession({
         headers: fromNodeHeaders(req.headers),
       });
-
+console.log("hit the first check");
       if (!session || !session.user) {
         return res.status(401).json({
           success: false,
@@ -37,7 +37,7 @@ export const auth = (...roles: UserRole[]) => {
           message: "Forbidden access",
         });
       }
-
+console.log("hit the final check");
       next();
     } catch (error) {
       console.error("Auth error:", error);

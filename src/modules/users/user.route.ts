@@ -4,7 +4,7 @@ import { userController } from './user.controller';
 const router = express.Router()
 
 
-router.get('/', auth, userController.getAllUser)
+router.get('/', auth('ADMIN','USER'), userController.getAllUser)
 
 
 export const userRouter= router
