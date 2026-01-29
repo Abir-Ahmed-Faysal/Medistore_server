@@ -1,0 +1,172 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum ORDER_STATUS {
+  PLACED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id            String     @id
+  name          String
+  email         String
+  emailVerified Boolean    @default(false)
+  image         String?
+  role   String? @default("USER")
+  status String? @default("ACTIVE")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  profile       Profile?
+  orders        Order[]
+  medicines     Medicine[]
+  reviews       Review[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Profile {
+  id          String    @id @default(uuid())
+  bio         String?
+  dateOfBirth DateTime?
+  userId      String    @unique
+  userRef     User      @relation(fields: [userId], references: [id])
+}
+
+model Order {
+  id         String       @id @default(uuid())
+  userId     String
+  userRef    User         @relation(fields: [userId], references: [id])
+  address    String       @db.VarChar(255)
+  status     ORDER_STATUS @default(PLACED)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  orderItems Order_item[]
+
+  @@index([userId])
+  @@map("order")
+}
+
+model Order_item {
+  id           String   @id @default(uuid())
+  orderId      String
+  userOrderRef Order    @relation(fields: [orderId], references: [id])
+  medicineId   String
+  medicineRef  Medicine @relation(fields: [medicineId], references: [id])
+  price        Decimal
+  quantity     Int
+  reviews      Review[]
+
+  @@index([orderId])
+  @@index([medicineId])
+  @@map("order_item")
+}
+
+model Medicine {
+  id           String       @id @default(uuid())
+  title        String
+  description  String       @db.Text
+  manufacturer String
+  price        Decimal
+  stock        Int
+  sellerId     String
+  sellerRef    User         @relation(fields: [sellerId], references: [id])
+  categoryId   String
+  categoryRef  Category     @relation(fields: [categoryId], references: [id])
+  orderItems   Order_item[]
+  reviews      Review[]
+
+  @@index([sellerId])
+  @@index([categoryId])
+  @@map("medicine")
+}
+
+model Category {
+  id            String     @id @default(uuid())
+  category_name String
+  medicines     Medicine[]
+
+  @@map("category")
+}
+
+model Review {
+  id            String     @id @default(uuid())
+  content       String
+  medicineId    String
+  medicineRef   Medicine   @relation(fields: [medicineId], references: [id])
+  userId        String
+  userRef       User       @relation(fields: [userId], references: [id])
+  order_itemId  String
+  order_itemRef Order_item @relation(fields: [order_itemId], references: [id])
+
+  @@index([medicineId])
+  @@index([userId])
+  @@index([order_itemId])
+  @@map("review")
+}
