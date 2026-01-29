@@ -30,8 +30,8 @@ export type UserMinAggregateOutputType = {
   email: string | null
   emailVerified: boolean | null
   image: string | null
-  role: $Enums.ROLE | null
-  status: $Enums.USER_STATUS | null
+  role: string | null
+  banned: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -42,8 +42,8 @@ export type UserMaxAggregateOutputType = {
   email: string | null
   emailVerified: boolean | null
   image: string | null
-  role: $Enums.ROLE | null
-  status: $Enums.USER_STATUS | null
+  role: string | null
+  banned: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -55,7 +55,7 @@ export type UserCountAggregateOutputType = {
   emailVerified: number
   image: number
   role: number
-  status: number
+  banned: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -69,7 +69,7 @@ export type UserMinAggregateInputType = {
   emailVerified?: true
   image?: true
   role?: true
-  status?: true
+  banned?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -81,7 +81,7 @@ export type UserMaxAggregateInputType = {
   emailVerified?: true
   image?: true
   role?: true
-  status?: true
+  banned?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -93,7 +93,7 @@ export type UserCountAggregateInputType = {
   emailVerified?: true
   image?: true
   role?: true
-  status?: true
+  banned?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -177,8 +177,8 @@ export type UserGroupByOutputType = {
   email: string
   emailVerified: boolean
   image: string | null
-  role: $Enums.ROLE
-  status: $Enums.USER_STATUS
+  role: string | null
+  banned: boolean | null
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -210,8 +210,8 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<"User"> | string
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.EnumROLEFilter<"User"> | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFilter<"User"> | $Enums.USER_STATUS
+  role?: Prisma.StringNullableFilter<"User"> | string | null
+  banned?: Prisma.BoolNullableFilter<"User"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -228,8 +228,8 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
-  role?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
@@ -249,8 +249,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"User"> | string
   emailVerified?: Prisma.BoolFilter<"User"> | boolean
   image?: Prisma.StringNullableFilter<"User"> | string | null
-  role?: Prisma.EnumROLEFilter<"User"> | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFilter<"User"> | $Enums.USER_STATUS
+  role?: Prisma.StringNullableFilter<"User"> | string | null
+  banned?: Prisma.BoolNullableFilter<"User"> | boolean | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -267,8 +267,8 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrderInput | Prisma.SortOrder
-  role?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  role?: Prisma.SortOrderInput | Prisma.SortOrder
+  banned?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -285,8 +285,8 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   emailVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   image?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  role?: Prisma.EnumROLEWithAggregatesFilter<"User"> | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSWithAggregatesFilter<"User"> | $Enums.USER_STATUS
+  role?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  banned?: Prisma.BoolNullableWithAggregatesFilter<"User"> | boolean | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -297,8 +297,8 @@ export type UserCreateInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -315,8 +315,8 @@ export type UserUncheckedCreateInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -333,8 +333,8 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -351,8 +351,8 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -369,8 +369,8 @@ export type UserCreateManyInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -381,8 +381,8 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -393,8 +393,8 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -406,7 +406,7 @@ export type UserCountOrderByAggregateInput = {
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -418,7 +418,7 @@ export type UserMaxOrderByAggregateInput = {
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -430,7 +430,7 @@ export type UserMinOrderByAggregateInput = {
   emailVerified?: Prisma.SortOrder
   image?: Prisma.SortOrder
   role?: Prisma.SortOrder
-  status?: Prisma.SortOrder
+  banned?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -452,12 +452,8 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type EnumROLEFieldUpdateOperationsInput = {
-  set?: $Enums.ROLE
-}
-
-export type EnumUSER_STATUSFieldUpdateOperationsInput = {
-  set?: $Enums.USER_STATUS
+export type NullableBoolFieldUpdateOperationsInput = {
+  set?: boolean | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -554,8 +550,8 @@ export type UserCreateWithoutSessionsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -571,8 +567,8 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -604,8 +600,8 @@ export type UserUpdateWithoutSessionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -621,8 +617,8 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -638,8 +634,8 @@ export type UserCreateWithoutAccountsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -655,8 +651,8 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -688,8 +684,8 @@ export type UserUpdateWithoutAccountsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -705,8 +701,8 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -722,8 +718,8 @@ export type UserCreateWithoutProfileInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -739,8 +735,8 @@ export type UserUncheckedCreateWithoutProfileInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -772,8 +768,8 @@ export type UserUpdateWithoutProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -789,8 +785,8 @@ export type UserUncheckedUpdateWithoutProfileInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -806,8 +802,8 @@ export type UserCreateWithoutOrdersInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -823,8 +819,8 @@ export type UserUncheckedCreateWithoutOrdersInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -856,8 +852,8 @@ export type UserUpdateWithoutOrdersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -873,8 +869,8 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -890,8 +886,8 @@ export type UserCreateWithoutMedicinesInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -907,8 +903,8 @@ export type UserUncheckedCreateWithoutMedicinesInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -940,8 +936,8 @@ export type UserUpdateWithoutMedicinesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -957,8 +953,8 @@ export type UserUncheckedUpdateWithoutMedicinesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -974,8 +970,8 @@ export type UserCreateWithoutReviewsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -991,8 +987,8 @@ export type UserUncheckedCreateWithoutReviewsInput = {
   email: string
   emailVerified?: boolean
   image?: string | null
-  role?: $Enums.ROLE
-  status?: $Enums.USER_STATUS
+  role?: string | null
+  banned?: boolean | null
   createdAt?: Date | string
   updatedAt?: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -1024,8 +1020,8 @@ export type UserUpdateWithoutReviewsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -1041,8 +1037,8 @@ export type UserUncheckedUpdateWithoutReviewsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string
   emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  role?: Prisma.EnumROLEFieldUpdateOperationsInput | $Enums.ROLE
-  status?: Prisma.EnumUSER_STATUSFieldUpdateOperationsInput | $Enums.USER_STATUS
+  role?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  banned?: Prisma.NullableBoolFieldUpdateOperationsInput | boolean | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -1126,7 +1122,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   emailVerified?: boolean
   image?: boolean
   role?: boolean
-  status?: boolean
+  banned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
@@ -1145,7 +1141,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerified?: boolean
   image?: boolean
   role?: boolean
-  status?: boolean
+  banned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1157,7 +1153,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   emailVerified?: boolean
   image?: boolean
   role?: boolean
-  status?: boolean
+  banned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -1169,12 +1165,12 @@ export type UserSelectScalar = {
   emailVerified?: boolean
   image?: boolean
   role?: boolean
-  status?: boolean
+  banned?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "role" | "banned" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -1203,8 +1199,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     email: string
     emailVerified: boolean
     image: string | null
-    role: $Enums.ROLE
-    status: $Enums.USER_STATUS
+    role: string | null
+    banned: boolean | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1641,8 +1637,8 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly emailVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly image: Prisma.FieldRef<"User", 'String'>
-  readonly role: Prisma.FieldRef<"User", 'ROLE'>
-  readonly status: Prisma.FieldRef<"User", 'USER_STATUS'>
+  readonly role: Prisma.FieldRef<"User", 'String'>
+  readonly banned: Prisma.FieldRef<"User", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

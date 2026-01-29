@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { auth as betterAuth } from "../lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { TypeUserRole } from "../types/userRole";
-import { TypeUserStatus } from "../types/userStatus";
+
 
 
 
@@ -26,7 +26,6 @@ export const auth = (...roles: TypeUserRole[]) => {
         email: session.user.email,
         name: session.user.name,
         role: session.user.role as TypeUserRole,
-        status: session.user.status as TypeUserStatus
       };
 
 

@@ -9,23 +9,6 @@
 * 🟢 You can import this file directly.
 */
 
-export const ROLE = {
-  USER: 'USER',
-  SELLER: 'SELLER',
-  ADMIN: 'ADMIN'
-} as const
-
-export type ROLE = (typeof ROLE)[keyof typeof ROLE]
-
-
-export const USER_STATUS = {
-  ACTIVE: 'ACTIVE',
-  DISABLED: 'DISABLED'
-} as const
-
-export type USER_STATUS = (typeof USER_STATUS)[keyof typeof USER_STATUS]
-
-
 export const ORDER_STATUS = {
   PLACED: 'PLACED',
   PROCESSING: 'PROCESSING',

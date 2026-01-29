@@ -1,6 +1,5 @@
 import "express";
 import { TypeUserRole } from "./userRole";
-import { TypeUserStatus } from "./userStatus";
 
 
 declare global {
@@ -11,7 +10,7 @@ declare global {
         email: string;
         name?: string;
         role: TypeUserRole;
-        status: TypeUserStatus;
+        banned?:boolean
       };
     }
   }
