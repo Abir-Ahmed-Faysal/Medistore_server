@@ -10,13 +10,12 @@ const getAllUser = async () => {
             role: true
         },
     });
-    
     return users;
 };
 
-const getUser = async (userId: string) => {
+const getUser = async (id:string) => {
     const user = await prisma.user.findUnique({
-        where: { id: userId },
+        where: { id: id },
         select: {
             id: true,
             name: true,
@@ -28,9 +27,6 @@ const getUser = async (userId: string) => {
     return user
 }
 
-const updateUserStatus=async(userId:string,status:"ACTIVE"|"DISABLED")=>{
-
-}
 
 
 
@@ -50,5 +46,5 @@ const updateUserStatus=async(userId:string,status:"ACTIVE"|"DISABLED")=>{
 
 
 export const userServices = {
-    getAllUser,
+    getAllUser, getUser
 }

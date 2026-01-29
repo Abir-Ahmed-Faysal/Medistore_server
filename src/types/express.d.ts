@@ -1,7 +1,7 @@
-// src/types/express.d.ts
 import "express";
-import { UserRole } from "../constant/Role";
-import { UserStatus } from "../constant/userStatus";
+import { TypeUserRole } from "./userRole";
+import { TypeUserStatus } from "./userStatus";
+
 
 declare global {
   namespace Express {
@@ -10,8 +10,8 @@ declare global {
         id: string;
         email: string;
         name?: string;
-        role: UserRole;
-        status: UserStatus;
+        role: TypeUserRole;
+        status: TypeUserStatus;
       };
     }
   }

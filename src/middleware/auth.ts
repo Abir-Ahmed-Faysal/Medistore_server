@@ -1,18 +1,19 @@
 import { NextFunction, Request, Response } from "express";
 import { auth as betterAuth } from "../lib/auth";
 import { fromNodeHeaders } from "better-auth/node";
-import { UserRole } from "../constant/Role";
-import { UserStatus } from "../constant/userStatus";
+import { TypeUserRole } from "../types/userRole";
+import { TypeUserStatus } from "../types/userStatus";
 
 
 
-export const auth = (...roles: UserRole[]) => {
+
+export const auth = (...roles: TypeUserRole[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const session = await betterAuth.api.getSession({
         headers: fromNodeHeaders(req.headers),
       });
-console.log("hit the first check");
+      console.log("hit the first check");
       if (!session || !session.user) {
         return res.status(401).json({
           success: false,
@@ -24,8 +25,8 @@ console.log("hit the first check");
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
-        role: session.user.role as UserRole,
-        status: session.user.status as UserStatus
+        role: session.user.role as TypeUserRole,
+        status: session.user.status as TypeUserStatus
       };
 
 
@@ -37,7 +38,7 @@ console.log("hit the first check");
           message: "Forbidden access",
         });
       }
-console.log("hit the final check");
+      console.log("hit the final check");
       next();
     } catch (error) {
       console.error("Auth error:", error);

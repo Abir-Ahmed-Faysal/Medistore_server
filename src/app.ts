@@ -12,7 +12,8 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json())
 
-app.use("/api/v1/users", userRouter)
+app.use("/api/admin/users", userRouter)
+app.use("/api/admin/users", userRouter)
 
 
 
