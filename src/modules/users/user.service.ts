@@ -6,26 +6,67 @@ const getAllUser = async () => {
             id: true,
             name: true,
             email: true,
-            status: true,
+            banned: true,
             role: true
         },
     });
     return users;
 };
 
-const getUser = async (id:string) => {
-    const user = await prisma.user.findUnique({
-        where: { id: id },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            status: true,
-            role: true
-        }
-    })
-    return user
-}
+const banUser = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { id: true, role: true, banned: true }
+  });
+
+  if (!user) {
+    throw Error("User not found");
+  }
+
+
+  if (user.banned) {
+    throw new Error("User already banned");
+  }
+
+  return prisma.user.update({
+    where: { id },
+    data: { banned: true },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      banned: true
+    }
+  });
+};
+
+const unBanUser = async (id: string) => {
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: { banned: true }
+  });
+
+  if (!user) {
+    throw new Error( "User not found");
+  }
+
+  if (!user.banned) {
+    throw new Error( "User is not banned");
+  }
+
+  return prisma.user.update({
+    where: { id },
+    data: { banned: false },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      banned: true
+    }
+  });
+};
 
 
 
@@ -36,15 +77,6 @@ const getUser = async (id:string) => {
 
 
 
-
-
-
-
-
-
-
-
-
-export const userServices = {
-    getAllUser, getUser
+export const userService = {
+    getAllUser, banUser,unBanUser
 }
