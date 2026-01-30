@@ -159,10 +159,19 @@ const addMedicine = async ({ title,
     })
 }
 
+// {"title":"Napa Extra 500mg",
+// "description":"napa is a pain reliever, fever reducer, and anti-inflammatory medication used to treat mild to moderate pain and reduce fever.",
+// "manufacturer":"Square Pharmaceuticals Ltd.",
+// "price":5,
+// "stock":"500",
+// "categoryId":"6e5ea054-c3c6-4b1e-8795-6ab6b58a85d0"}
+
 const updateMedicine = async (
     id: string,
     payload: Omit<Medicine, "id">
 ): Promise<Medicine> => {
+    console.log(payload);
+
     const result = await prisma.medicine.update({
         where: { id },
         data: payload,

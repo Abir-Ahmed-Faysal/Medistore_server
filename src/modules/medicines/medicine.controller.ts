@@ -28,7 +28,7 @@ const getAllMedicines = async (req: Request, res: Response, next: NextFunction) 
         if (!allMedicine) {
             return sendResponse(res, { success: false, message: "no medicine found" }, 404)
         }
-        return sendResponse(res, { success: true, message: "medicine data retrieve successfully", data: allMedicine }, 404)
+        return sendResponse(res, { success: true, message: "medicine data retrieve successfully", data: allMedicine }, 200)
     } catch (error) {
         next(error)
     }
@@ -55,7 +55,12 @@ const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
 
 const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { title, description, manufacturer, price, stock, sellerId, categoryId } = req.body;
+        const { title, description, manufacturer, price, stock,  categoryId } = req.body;
+        const {id : sellerId} = req.user!;
+
+        if(!sellerId || typeof sellerId !== "string"){
+            throw new Error("seller id not found")
+        }
 
 
         if (!title || !description || !manufacturer || !price || !stock || !sellerId || !categoryId) {
@@ -88,9 +93,19 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
     try {
         const { id } = req.params;
         const payload = req.body;
+
         if (!id || typeof id !== "string" || !payload) {
             throw new Error("id updated data not found")
         }
+
+        if(payload.price){
+            payload.price = Number(payload.price);
+        }
+        if(payload.price){
+            payload.stock = Number(payload.stock);
+        }
+
+
         const result = await medicineService.updateMedicine(id, payload);
 
         sendResponse(res, {
