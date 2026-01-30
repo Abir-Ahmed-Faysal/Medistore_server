@@ -1,4 +1,3 @@
-import { SellerOrderStatus } from "../../constant/orderStatus";
 import { ORDER_STATUS } from "../../generated/enums";
 import { prisma } from "../../lib/prisma"
 
@@ -12,10 +11,10 @@ const getUserOrders = async (userId: string) => {
             createdAt: true,
             orderItems: {
                 select: {
-                    price: true,
                     quantity: true,
                     medicineRef: {
                         select: {
+                            price: true,
                             title: true,
                             categoryRef: {
                                 select: {
@@ -46,7 +45,7 @@ const getUserOrders = async (userId: string) => {
     //! calculating total price for each order
     return orders.map(order => {
         const totalPrice = order.orderItems.reduce((acc, item) => {
-            return acc + item.price.toNumber() * item.quantity;
+            return acc + item.medicineRef.price.toNumber() * item.quantity;
         }, 0);
 
         return {
@@ -54,7 +53,7 @@ const getUserOrders = async (userId: string) => {
             totalPrice,
             orderItems: order.orderItems.map(item => ({
                 ...item,
-                itemTotal: item.price.toNumber() * item.quantity,
+                itemTotal: item.medicineRef.price.toNumber() * item.quantity,
             })),
         };
     });
@@ -71,11 +70,11 @@ const getOrderDetails = async (userId: string, orderItemId: string) => {
             },
         },
         select: {
-            price: true,
+
             quantity: true,
             medicineRef: {
                 select: {
-
+                    price: true,
                     title: true, reviews: {
                         select: {
                             id: true, content: true,
@@ -108,7 +107,7 @@ const getOrderDetails = async (userId: string, orderItemId: string) => {
 
     return {
         ...orderItem,
-        totalPrice: Number(orderItem.price) * orderItem.quantity,
+        totalPrice: Number(orderItem.medicineRef.price) * orderItem.quantity,
     };
 };
 
@@ -150,7 +149,6 @@ const createNewOrder = async (
                 orderId: order.id,
                 medicineId,
                 quantity,
-                price: medicine.price,
             },
         });
 
@@ -171,28 +169,28 @@ const createNewOrder = async (
 
 
 const getSellerOrders = async (sellerId: string) => {
-  const orders = await prisma.order_item.findMany({
-    where: {
-      medicineRef: {
-        sellerId: sellerId,
-      },
-      userOrderRef: {
-        userRef: {
-          role: "USER",
+    const orders = await prisma.order_item.findMany({
+        where: {
+            medicineRef: {
+                sellerId: sellerId,
+            },
+            userOrderRef: {
+                userRef: {
+                    role: "USER",
+                },
+            },
         },
-      },
-    },
-    include: {
-      medicineRef: true,
-      userOrderRef: {
         include: {
-          userRef: true,
+            medicineRef: true,
+            userOrderRef: {
+                include: {
+                    userRef: true,
+                },
+            },
         },
-      },
-    },
-  });
+    });
 
-  return orders;
+    return orders;
 };
 
 
@@ -200,35 +198,38 @@ const getSellerOrders = async (sellerId: string) => {
 
 const updateOrderStatus = async (
   orderId: string,
+  sellerId: string,
   status: ORDER_STATUS
 ) => {
-  const updatedOrder = await prisma.order.update({
-    where: { id: orderId, },
-    data: { status},
+  const orderItem = await prisma.order_item.findFirst({
+    where: {
+      orderId,
+      medicineRef: { sellerId },
+    },
   });
 
-  return updatedOrder;
+  if (!orderItem) {
+    throw new Error("Unauthorized order update");
+  }
+
+  return prisma.order.update({
+    where: { id: orderId },
+    data: { status },
+  });
 };
 
 
-const cancelUserOrder = async (
-  orderId: string,
-  userId: string
-) => {
-  const order = await prisma.order.findUnique({
+const cancelUserOrder = async (orderId: string, userId: string) => {
+  const order = await prisma.order.findUniqueOrThrow({
     where: { id: orderId },
   });
 
-  if (!order) {
-    throw new Error("Order not found");
-  }
-
   if (order.userId !== userId) {
-    throw new Error("You are not authorized to cancel this order");
+    throw new Error("Unauthorized");
   }
 
-  if (order.status !== ORDER_STATUS.PROCESSING) {
-    throw new Error("Only pending orders can be cancelled");
+  if (order.status !== ORDER_STATUS.PLACED) {
+    throw new Error("Only placed orders can be cancelled");
   }
 
   return prisma.order.update({
@@ -241,5 +242,5 @@ const cancelUserOrder = async (
 
 
 export const orderService = {
-    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders ,updateOrderStatus,cancelUserOrder
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatus, cancelUserOrder
 }

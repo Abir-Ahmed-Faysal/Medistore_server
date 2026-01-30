@@ -5,7 +5,7 @@ import { categoryService } from "./category.service";
 const getAllCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const allCategories = await categoryService.getAllCategories();
-        res.status(200).json({ success: true, data: allCategories });
+        res.status(200).json({ success: true,message: "category data retrieve successfully", data: allCategories });
     } catch (error: any) {
         next(error)
     }
@@ -19,7 +19,7 @@ const createCategory = async (req: Request, res: Response, next: NextFunction) =
             return res.status(400).json({ success: false, message: "Category name is required" });
         }
         const newCategory = await categoryService.createCategory(category_name);
-        res.status(201).json({ success: true, data: newCategory });
+        res.status(201).json({ success: true, message: "category create successfully", data: newCategory });
     } catch (error: any) {
         next(error)
     }
@@ -36,7 +36,7 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
         }
 
         const updatedCategory = await categoryService.updateCategory(id as string, category_name);
-        res.status(200).json({ success: true, data: updatedCategory });
+        res.status(200).json({ success: true,message:"category data update successfully", data: updatedCategory });
     } catch (error: any) {
         next(error)
     }

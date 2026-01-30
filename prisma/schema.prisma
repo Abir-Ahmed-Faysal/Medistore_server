@@ -106,7 +106,7 @@ model Profile {
 
 model Order {
   id         String       @id @default(uuid())
-  userId     String       @unique
+  userId     String
   userRef    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   address    String       @db.VarChar(255)
   status     ORDER_STATUS @default(PLACED)
@@ -167,6 +167,7 @@ model Review {
   userId        String
   userRef       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   order_itemId  String
+  rating       Int
   order_itemRef Order_item @relation(fields: [order_itemId], references: [id], onDelete: Cascade)
 
   @@index([medicineId])

@@ -128,5 +128,5 @@ const removeMedicine = async (req: Request, res: Response, next: NextFunction) =
 
 
 export const medicineController = {
-    getAllMedicines, getMedicine, addMedicine, updateMedicine
+    getAllMedicines, getMedicine, addMedicine, updateMedicine,removeMedicine
 }

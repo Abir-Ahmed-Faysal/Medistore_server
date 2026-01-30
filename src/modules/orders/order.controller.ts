@@ -3,7 +3,6 @@
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../middleware/sendRes";
 import { orderService } from "./order.service";
-import { SellerOrderStatus } from "../../constant/orderStatus";
 import { ORDER_STATUS } from "../../generated/enums";
 
 // ! user route
@@ -37,13 +36,12 @@ const getOrderDetails = async (req: Request, res: Response, next: NextFunction) 
     }
     try {
         const orderDetails = await orderService.getOrderDetails(userId, orderItemId);
+        return sendResponse(res, { success: true, message: "Order details fetched successfully", data: orderDetails }, 200);
 
     } catch (error) {
         next(error);
     }
 }
-
-
 
 const createNewOrder = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -74,56 +72,35 @@ const createNewOrder = async (req: Request, res: Response, next: NextFunction) =
 
 }
 
-
-
-export const updateUserOrderStatus = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const updateUserOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const userId = req.user?.id;
         const { id: orderId } = req.params;
-        const userId = req.user!.id;
         const status = req.body.status as ORDER_STATUS;
 
-
-        if (!orderId || typeof orderId !== "string") {
-            return sendResponse(res, {
-                success: false,
-                message: "Order ID is required",
-            }, 400);
+        if (!userId || typeof userId !== "string" || !orderId || typeof orderId !== "string") {
+            return sendResponse(res, { success: false, message: "Invalid request" }, 400);
         }
-
 
         if (status !== ORDER_STATUS.CANCELLED) {
-            return sendResponse(res, {
-                success: false,
-                message: "Only CANCELLED status is allowed",
-            }, 400);
+            return sendResponse(
+                res,
+                { success: false, message: "Only CANCELLED status allowed" },
+                400
+            );
         }
 
-        const updatedOrder = await orderService.cancelUserOrder(
-            orderId,
-            userId
+        const updatedOrder = await orderService.cancelUserOrder(orderId, userId);
+
+        return sendResponse(
+            res,
+            { success: true, message: "Order cancelled successfully", data: updatedOrder },
+            200
         );
-
-        return sendResponse(res, {
-            success: true,
-            message: "Order cancelled successfully",
-            data: updatedOrder,
-        }, 200);
-
     } catch (error) {
         next(error);
     }
 };
-
-
-
-
-
-
-
 
 // ! seller route
 
@@ -150,44 +127,50 @@ const getSellerOrders = async (req: Request, res: Response, next: NextFunction) 
 }
 
 
-
-const updateOrderStatusBySeller = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+const updateOrderStatusBySeller = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const sellerId = req.user?.id;
         const { id: orderId } = req.params;
-        const { status } = req.body;
+        const status = req.body.status as ORDER_STATUS;
 
+        if (!sellerId || !orderId) {
+            return sendResponse(res, { success: false, message: "Invalid request" }, 400);
+        }
         if (!orderId || typeof orderId !== 'string') {
-            return res.status(400).json({
-                message: "Order ID is required",
-            });
+            return sendResponse(res, { success: false, message: "Order ID is required" }, 400);
         }
 
-        if (!Object.values(SellerOrderStatus).includes(status)) {
-            return res.status(400).json({
-                message: "Invalid order status",
-                validStatus: Object.values(SellerOrderStatus),
-            });
+        if (!Object.values(ORDER_STATUS).includes(status)) {
+            return sendResponse(
+                res,
+                {
+                    success: false,
+                    message: "Invalid order status",
+                    data: Object.values(ORDER_STATUS),
+                },
+                400
+            );
+        }
+
+        if (status === ORDER_STATUS.CANCELLED) {
+            throw new Error("Sellers cannot cancel orders");
         }
 
         const updatedOrder = await orderService.updateOrderStatus(
             orderId,
+            sellerId,
             status
         );
 
-        res.status(200).json({
-            message: "Order status updated successfully",
-            data: updatedOrder,
-        });
+        return sendResponse(
+            res,
+            { success: true, message: "Order status updated", data: updatedOrder },
+            200
+        );
     } catch (error) {
         next(error);
     }
 };
-
-
 
 
 export const orderController = {

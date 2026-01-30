@@ -69,14 +69,6 @@ const unBanUser = async (id: string) => {
 };
 
 
-
-
-
-
-
-
-
-
 export const userService = {
     getAllUser, banUser,unBanUser
 }
