@@ -103,6 +103,26 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+const removeMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        if (!id || typeof id !== "string") {
+            throw new Error("id not found")
+        }
+        const result = await medicineService.removeMedicine(id);
+        if (!result) {
+            return sendResponse(res, { success: false, message: "medicine not found" }, 404)
+        }
+        sendResponse(res, {
+            success: true,
+            message: "Medicine removed successfully",
+            data: result,
+        }, 200);
+
+    } catch (error) {
+        next(error)
+    }
+}
 
 
 

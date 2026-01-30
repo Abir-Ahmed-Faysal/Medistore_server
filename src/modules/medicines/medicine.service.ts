@@ -171,7 +171,24 @@ const updateMedicine = async (
     return result;
 };
 
+const removeMedicine = async (id: string): Promise<Medicine | null> => {
+    const medicine = await prisma.medicine.findUnique({
+        where: { id }, select: { id: true }
+    });
+    if (!medicine) { throw new Error("Medicine not found") }
+
+    const result = await prisma.medicine.delete({
+        where: { id }
+    });
+    return result;
+
+}
+
+
+
+
+
 
 export const medicineService = {
-    getAllMedicine, getMedicine, addMedicine, updateMedicine
+    getAllMedicine, getMedicine, addMedicine, updateMedicine, removeMedicine
 }

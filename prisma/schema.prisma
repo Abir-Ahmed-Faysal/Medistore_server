@@ -33,7 +33,7 @@ model User {
   email         String
   emailVerified Boolean    @default(false)
   image         String?
-  role          UserRole    @default(USER)
+  role          UserRole   @default(USER)
   banned        Boolean    @default(false)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
@@ -106,7 +106,7 @@ model Profile {
 
 model Order {
   id         String       @id @default(uuid())
-  userId     String
+  userId     String       @unique
   userRef    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   address    String       @db.VarChar(255)
   status     ORDER_STATUS @default(PLACED)
@@ -124,7 +124,6 @@ model Order_item {
   userOrderRef Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   medicineId   String
   medicineRef  Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
-  price        Decimal
   quantity     Int
   reviews      Review[]
 
@@ -138,7 +137,7 @@ model Medicine {
   title        String
   description  String       @db.Text
   manufacturer String
-  price        Decimal
+  price        Decimal      @db.Decimal(10, 2)
   stock        Int
   sellerId     String
   sellerRef    User         @relation(fields: [sellerId], references: [id], onDelete: Cascade)
@@ -154,7 +153,7 @@ model Medicine {
 
 model Category {
   id            String     @id @default(uuid())
-  category_name String @unique
+  category_name String     @unique
   medicines     Medicine[]
 
   @@map("category")
