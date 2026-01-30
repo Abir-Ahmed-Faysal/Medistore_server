@@ -1,11 +1,12 @@
-//user route
+
 
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../middleware/sendRes";
-import { orderService } from "./profile.service";
+import { orderService } from "./order.service";
+import { SellerOrderStatus } from "../../constant/orderStatus";
 import { ORDER_STATUS } from "../../generated/enums";
 
-
+// ! user route
 const getUserOrders = async (req: Request, res: Response, next: NextFunction) => {
     const { id: userId } = req.user as { id: string };
     if (!userId || typeof userId !== 'string') {
@@ -75,12 +76,56 @@ const createNewOrder = async (req: Request, res: Response, next: NextFunction) =
 
 
 
+export const updateUserOrderStatus = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id: orderId } = req.params;
+        const userId = req.user!.id;
+        const status = req.body.status as ORDER_STATUS;
+
+
+        if (!orderId || typeof orderId !== "string") {
+            return sendResponse(res, {
+                success: false,
+                message: "Order ID is required",
+            }, 400);
+        }
+
+
+        if (status !== ORDER_STATUS.CANCELLED) {
+            return sendResponse(res, {
+                success: false,
+                message: "Only CANCELLED status is allowed",
+            }, 400);
+        }
+
+        const updatedOrder = await orderService.cancelUserOrder(
+            orderId,
+            userId
+        );
+
+        return sendResponse(res, {
+            success: true,
+            message: "Order cancelled successfully",
+            data: updatedOrder,
+        }, 200);
+
+    } catch (error) {
+        next(error);
+    }
+};
 
 
 
 
 
-//seller route
+
+
+
+// ! seller route
 
 
 const getSellerOrders = async (req: Request, res: Response, next: NextFunction) => {
@@ -91,6 +136,9 @@ const getSellerOrders = async (req: Request, res: Response, next: NextFunction) 
         if (!orders) {
             return sendResponse(res, { success: false, message: "No orders found" }, 404);
         }
+
+
+
         return sendResponse(res, { success: true, message: "Orders fetched successfully", data: orders }, 200);
 
 
@@ -103,45 +151,45 @@ const getSellerOrders = async (req: Request, res: Response, next: NextFunction) 
 
 
 
-const updateOrderStatus = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+const updateOrderStatusBySeller = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) => {
-  try {
-    const { id: orderId } = req.params;
-    const { status } = req.body;
+    try {
+        const { id: orderId } = req.params;
+        const { status } = req.body;
 
-    if (!orderId||typeof orderId !== 'string'   ) {
-      return res.status(400).json({
-        message: "Order ID is required",
-      });
+        if (!orderId || typeof orderId !== 'string') {
+            return res.status(400).json({
+                message: "Order ID is required",
+            });
+        }
+
+        if (!Object.values(SellerOrderStatus).includes(status)) {
+            return res.status(400).json({
+                message: "Invalid order status",
+                validStatus: Object.values(SellerOrderStatus),
+            });
+        }
+
+        const updatedOrder = await orderService.updateOrderStatus(
+            orderId,
+            status
+        );
+
+        res.status(200).json({
+            message: "Order status updated successfully",
+            data: updatedOrder,
+        });
+    } catch (error) {
+        next(error);
     }
-
-    if (!Object.values(ORDER_STATUS).includes(status)) {
-      return res.status(400).json({
-        message: "Invalid order status",
-        validStatus: Object.values(ORDER_STATUS),
-      });
-    }
-
-    const updatedOrder = await orderService.updateOrderStatus(
-      orderId,
-      status
-    );
-
-    res.status(200).json({
-      message: "Order status updated successfully",
-      data: updatedOrder,
-    });
-  } catch (error) {
-    next(error);
-  }
 };
 
-export default updateOrderStatus;
+
 
 
 export const orderController = {
-    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatusBySeller
 };

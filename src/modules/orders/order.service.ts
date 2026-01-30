@@ -1,3 +1,4 @@
+import { SellerOrderStatus } from "../../constant/orderStatus";
 import { ORDER_STATUS } from "../../generated/enums";
 import { prisma } from "../../lib/prisma"
 
@@ -202,16 +203,43 @@ const updateOrderStatus = async (
   status: ORDER_STATUS
 ) => {
   const updatedOrder = await prisma.order.update({
-    where: { id: orderId },
-    data: { status },
+    where: { id: orderId, },
+    data: { status},
   });
 
   return updatedOrder;
 };
 
 
+const cancelUserOrder = async (
+  orderId: string,
+  userId: string
+) => {
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+  });
+
+  if (!order) {
+    throw new Error("Order not found");
+  }
+
+  if (order.userId !== userId) {
+    throw new Error("You are not authorized to cancel this order");
+  }
+
+  if (order.status !== ORDER_STATUS.PROCESSING) {
+    throw new Error("Only pending orders can be cancelled");
+  }
+
+  return prisma.order.update({
+    where: { id: orderId },
+    data: { status: ORDER_STATUS.CANCELLED },
+  });
+};
+
+
 
 
 export const orderService = {
-    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders ,updateOrderStatus
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders ,updateOrderStatus,cancelUserOrder
 }

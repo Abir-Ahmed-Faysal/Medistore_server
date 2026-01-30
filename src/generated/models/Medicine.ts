@@ -510,6 +510,14 @@ export type MedicineUpdateOneRequiredWithoutOrderItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MedicineUpdateToOneWithWhereWithoutOrderItemsInput, Prisma.MedicineUpdateWithoutOrderItemsInput>, Prisma.MedicineUncheckedUpdateWithoutOrderItemsInput>
 }
 
+export type DecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
 export type MedicineCreateNestedManyWithoutCategoryRefInput = {
   create?: Prisma.XOR<Prisma.MedicineCreateWithoutCategoryRefInput, Prisma.MedicineUncheckedCreateWithoutCategoryRefInput> | Prisma.MedicineCreateWithoutCategoryRefInput[] | Prisma.MedicineUncheckedCreateWithoutCategoryRefInput[]
   connectOrCreate?: Prisma.MedicineCreateOrConnectWithoutCategoryRefInput | Prisma.MedicineCreateOrConnectWithoutCategoryRefInput[]
