@@ -1,3 +1,4 @@
+import { ORDER_STATUS } from "../../generated/enums";
 import { prisma } from "../../lib/prisma"
 
 const getUserOrders = async (userId: string) => {
@@ -167,6 +168,50 @@ const createNewOrder = async (
 };
 
 
+
+const getSellerOrders = async (sellerId: string) => {
+  const orders = await prisma.order_item.findMany({
+    where: {
+      medicineRef: {
+        sellerId: sellerId,
+      },
+      userOrderRef: {
+        userRef: {
+          role: "USER",
+        },
+      },
+    },
+    include: {
+      medicineRef: true,
+      userOrderRef: {
+        include: {
+          userRef: true,
+        },
+      },
+    },
+  });
+
+  return orders;
+};
+
+
+
+
+const updateOrderStatus = async (
+  orderId: string,
+  status: ORDER_STATUS
+) => {
+  const updatedOrder = await prisma.order.update({
+    where: { id: orderId },
+    data: { status },
+  });
+
+  return updatedOrder;
+};
+
+
+
+
 export const orderService = {
-    getUserOrders, getOrderDetails, createNewOrder
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders ,updateOrderStatus
 }

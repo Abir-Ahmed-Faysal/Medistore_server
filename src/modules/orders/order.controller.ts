@@ -3,6 +3,7 @@
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../middleware/sendRes";
 import { orderService } from "./profile.service";
+import { ORDER_STATUS } from "../../generated/enums";
 
 
 const getUserOrders = async (req: Request, res: Response, next: NextFunction) => {
@@ -82,7 +83,65 @@ const createNewOrder = async (req: Request, res: Response, next: NextFunction) =
 //seller route
 
 
+const getSellerOrders = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id: sellerId } = req.user as { id: string };
+
+        const orders = await orderService.getSellerOrders(sellerId);
+        if (!orders) {
+            return sendResponse(res, { success: false, message: "No orders found" }, 404);
+        }
+        return sendResponse(res, { success: true, message: "Orders fetched successfully", data: orders }, 200);
+
+
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+
+const updateOrderStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id: orderId } = req.params;
+    const { status } = req.body;
+
+    if (!orderId||typeof orderId !== 'string'   ) {
+      return res.status(400).json({
+        message: "Order ID is required",
+      });
+    }
+
+    if (!Object.values(ORDER_STATUS).includes(status)) {
+      return res.status(400).json({
+        message: "Invalid order status",
+        validStatus: Object.values(ORDER_STATUS),
+      });
+    }
+
+    const updatedOrder = await orderService.updateOrderStatus(
+      orderId,
+      status
+    );
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      data: updatedOrder,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default updateOrderStatus;
+
 
 export const orderController = {
-    getUserOrders, getOrderDetails,createNewOrder
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders
 };
