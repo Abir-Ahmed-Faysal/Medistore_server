@@ -105,14 +105,15 @@ model Profile {
 }
 
 model Order {
-  id         String       @id @default(uuid())
-  userId     String
-  userRef    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  address    String       @db.VarChar(255)
-  status     ORDER_STATUS @default(PLACED)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  orderItems Order_item[]
+  id          String       @id @default(uuid())
+  userId      String
+  userRef     User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  address     String       @db.VarChar(255)
+  totalAmount Decimal      @default(0) @db.Decimal(10, 2)
+  status      ORDER_STATUS @default(PLACED)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  orderItems  Order_item[]
 
   @@index([userId])
   @@map("order")
@@ -167,7 +168,7 @@ model Review {
   userId        String
   userRef       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   order_itemId  String
-  rating       Int
+  rating        Int
   order_itemRef Order_item @relation(fields: [order_itemId], references: [id], onDelete: Cascade)
 
   @@index([medicineId])

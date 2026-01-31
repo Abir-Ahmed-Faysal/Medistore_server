@@ -61,43 +61,22 @@ const getUserOrders = async (userId: string) => {
 
 
 
-const getOrderDetails = async (userId: string, orderItemId: string) => {
-    const orderItem = await prisma.order_item.findFirstOrThrow({
+const getOrderDetails = async (userId: string, orderId: string) => {
+    const order = await prisma.order.findFirstOrThrow({
         where: {
-            id: orderItemId,
-            userOrderRef: {
-                userId,
-            },
+            id: orderId,
+            userId,
         },
-        select: {
-
-            quantity: true,
-            medicineRef: {
+        include: {
+            orderItems: {
                 select: {
-                    price: true,
-                    title: true, reviews: {
+                    quantity: true,
+                    medicineRef: {
                         select: {
-                            id: true, content: true,
-                            userRef: { select: { name: true } }
-                        }
-                    },
-                    manufacturer: true,
-                    categoryRef: {
-                        select: {
-                            category_name: true,
-                        },
-                    },
-                },
-            },
-            userOrderRef: {
-                select: {
-                    address: true,
-                    status: true,
-                    createdAt: true,
-                    userRef: {
-                        select: {
-                            name: true,
-                            email: true,
+                            price: true,
+                            title: true,
+                            description: true,
+                            manufacturer: true,
                         },
                     },
                 },
@@ -105,66 +84,102 @@ const getOrderDetails = async (userId: string, orderItemId: string) => {
         },
     });
 
+    const totalPrice = order.orderItems.reduce((sum, item) => {
+        return sum + Number(item.medicineRef.price) * item.quantity;
+    }, 0);
+
     return {
-        ...orderItem,
-        totalPrice: Number(orderItem.medicineRef.price) * orderItem.quantity,
+        ...order,
+        totalPrice,
     };
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 const createNewOrder = async (
     userId: string,
     address: string,
-    medicineId: string,
-    quantity: number
+    items: { medicineId: string; quantity: number }[]
 ) => {
-    return await prisma.$transaction(async (tx) => {
 
 
-        const medicine = await tx.medicine.findUniqueOrThrow({
-            where: { id: medicineId },
-            select: {
-                id: true,
-                price: true,
-                stock: true,
-            },
+    return prisma.$transaction(async (tx) => {
+        //  Fetch all medicines
+        const medicineIds = items.map(i => i.medicineId);
+
+        const medicines = await tx.medicine.findMany({
+            where: { id: { in: medicineIds } },
         });
 
-        if (medicine.stock < quantity) {
-            throw new Error("Insufficient stock");
+        if (medicines.length !== items.length) {
+            throw new Error("Some medicines not found");
         }
 
-        // 2️⃣ Create order
+        const medicineMap = new Map(
+            medicines.map(m => [m.id, m])
+        );
+
+        let totalAmount = 0;
+
+        for (const item of items) {
+            const medicine = medicineMap.get(item.medicineId)!;
+
+            if (medicine.stock < item.quantity) {
+                throw new Error(`Insufficient stock for ${medicine.title}`);
+            }
+
+            totalAmount += medicine.price.toNumber() * Number(item.quantity);
+        }
+
+
         const order = await tx.order.create({
             data: {
                 userId,
                 address,
-            },
-            select: { id: true },
-        });
-
-
-        await tx.order_item.create({
-            data: {
-                orderId: order.id,
-                medicineId,
-                quantity,
+                totalAmount,
             },
         });
 
 
-        await tx.medicine.update({
-            where: { id: medicineId },
-            data: {
-                stock: {
-                    decrement: quantity,
+
+        //  Create order items 
+        for (const item of items) {
+            await tx.order_item.create({
+                data: {
+                    orderId: order.id,
+                    medicineId: item.medicineId,
+                    quantity: item.quantity,
                 },
-            },
-        });
+            });
 
-        return order;
+            await tx.medicine.update({
+                where: { id: item.medicineId },
+                data: {
+                    stock: {
+                        decrement: item.quantity,
+                    },
+                },
+            });
+
+
+
+        }
+
+        return { order, totalAmount };
     });
 };
+
 
 
 
@@ -197,45 +212,45 @@ const getSellerOrders = async (sellerId: string) => {
 
 
 const updateOrderStatus = async (
-  orderId: string,
-  sellerId: string,
-  status: ORDER_STATUS
+    orderId: string,
+    sellerId: string,
+    status: ORDER_STATUS
 ) => {
-  const orderItem = await prisma.order_item.findFirst({
-    where: {
-      orderId,
-      medicineRef: { sellerId },
-    },
-  });
+    const orderItem = await prisma.order_item.findFirst({
+        where: {
+            orderId,
+            medicineRef: { sellerId },
+        },
+    });
 
-  if (!orderItem) {
-    throw new Error("Unauthorized order update");
-  }
+    if (!orderItem) {
+        throw new Error("Unauthorized order update");
+    }
 
-  return prisma.order.update({
-    where: { id: orderId },
-    data: { status },
-  });
+    return prisma.order.update({
+        where: { id: orderId },
+        data: { status },
+    });
 };
 
 
 const cancelUserOrder = async (orderId: string, userId: string) => {
-  const order = await prisma.order.findUniqueOrThrow({
-    where: { id: orderId },
-  });
+    const order = await prisma.order.findUniqueOrThrow({
+        where: { id: orderId },
+    });
 
-  if (order.userId !== userId) {
-    throw new Error("Unauthorized");
-  }
+    if (order.userId !== userId) {
+        throw new Error("Unauthorized");
+    }
 
-  if (order.status !== ORDER_STATUS.PLACED) {
-    throw new Error("Only placed orders can be cancelled");
-  }
+    if (order.status !== ORDER_STATUS.PLACED) {
+        throw new Error("Only placed orders can be cancelled");
+    }
 
-  return prisma.order.update({
-    where: { id: orderId },
-    data: { status: ORDER_STATUS.CANCELLED },
-  });
+    return prisma.order.update({
+        where: { id: orderId },
+        data: { status: ORDER_STATUS.CANCELLED },
+    });
 };
 
 

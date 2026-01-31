@@ -8,6 +8,8 @@ import { notFoundHandler } from './middleware/notFound';
 import { universalErrorHandler } from './middleware/universalError';
 import { medicineRouter } from './modules/medicines/medicine.route';
 import { categoryRouter } from './modules/categories/category.route';
+import { orderRouter } from './modules/orders/order.route';
+import { hitApi } from './middleware/hitChecker';
 const app: Application = express()
 
 app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }))
@@ -33,6 +35,12 @@ app.use("/api/seller/medicines", medicineRouter)
 
 
 
+// *order routes */
+app.use("/api/orders",orderRouter)
+
+
+
+// *auth routes */
 app.use("/api/auth/me", authRouter)
 app.use("/api/admin/users", userRouter)
 app.use("/api/admin/users", userRouter)
