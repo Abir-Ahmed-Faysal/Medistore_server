@@ -18,9 +18,10 @@ router.patch('/seller/:id',hitApi, auth("SELLER"), orderController.updateOrderSt
 
 
 // *admin routes
-router.get('/:id', auth("ADMIN"),);
-router.patch('/:id', auth("ADMIN"),);
-router.delete('/:id', auth("ADMIN"),);
+router.get('/admin', auth("ADMIN"),);
+router.get('/admin/:id', auth("ADMIN"),);
+router.patch('/admin/:id', auth("ADMIN"),);
+router.delete('/admin/:id', auth("ADMIN"),);
 
 
 

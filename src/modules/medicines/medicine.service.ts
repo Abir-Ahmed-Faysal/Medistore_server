@@ -145,7 +145,20 @@ const addMedicine = async ({ title,
     categoryId, }: AddMedicineDTO) => {
 
 
-    console.log(typeof convertPrice, typeof convertStock);
+    const findCategory = await prisma.category.findUnique({
+        where: {
+            id: categoryId
+        }, select: {
+            id: true
+        }
+    })
+
+
+    if (!findCategory) {
+        throw new Error("category Not found")
+    }
+
+
 
     return prisma.medicine.create({
         data: {
@@ -165,15 +178,15 @@ const addMedicine = async ({ title,
 
 
 const updateMedicine = async (
- 
-    id: string,   sellerId: string,
+
+    id: string, sellerId: string,
     payload: Omit<Medicine, "id">
 ): Promise<Medicine> => {
     console.log(payload);
     const medicine = await prisma.medicine.findFirst({
-  where: { id, sellerId }
-})
-if (!medicine) throw new Error("Unauthorized")
+        where: { id, sellerId }
+    })
+    if (!medicine) throw new Error("Unauthorized")
 
     const result = await prisma.medicine.update({
         where: { id },
@@ -183,13 +196,10 @@ if (!medicine) throw new Error("Unauthorized")
     return result;
 };
 
-const removeMedicine = async (id: string,sellerId:string): Promise<Medicine | null> => {
+const removeMedicine = async (id: string, sellerId: string): Promise<Medicine | null> => {
 
-    
-
-    
     const medicine = await prisma.medicine.findUnique({
-        where: { id ,sellerId}, select: { id: true }
+        where: { id, sellerId }, select: { id: true }
     });
     if (!medicine) { throw new Error("Medicine not found") }
 

@@ -59,6 +59,7 @@ export const getUserOrders = async (
     next: NextFunction
 ) => {
     try {
+        console.log("hit here vvvvv");
         const { id: userId } = req.user as { id: string };
 
         if (!userId) {
@@ -66,6 +67,7 @@ export const getUserOrders = async (
         }
 
         const orders = await orderService.getUserOrders(userId);
+      
 
         return sendResponse(
             res,
@@ -84,6 +86,7 @@ const getOrderDetails = async (
     res: Response,
     next: NextFunction
 ) => {
+    console.log("man hit ehr");
     try {
         const { id: userId } = req.user as { id: string };
         const { id: orderId } = req.params;

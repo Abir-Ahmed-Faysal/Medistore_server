@@ -10,6 +10,7 @@ import { medicineRouter } from './modules/medicines/medicine.route';
 import { categoryRouter } from './modules/categories/category.route';
 import { orderRouter } from './modules/orders/order.route';
 import { hitApi } from './middleware/hitChecker';
+import { reviewRouter } from './modules/reviews/review.route';
 const app: Application = express()
 
 app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }))
@@ -22,6 +23,15 @@ app.use(express.json())
 app.get('/', (_, res) => {
     res.send('MediStore server is running')
 })
+
+
+
+// *auth routes */
+app.use("/api/auth/me", authRouter)
+app.use("/api/auth/sign-up", authRouter)
+app.use("/api/admin/users", userRouter)
+app.use("/api/admin/users", userRouter)
+
 
 
 // *category routes */
@@ -37,21 +47,12 @@ app.use("/api/seller/medicines", medicineRouter)
 
 
 // *order routes */
-app.use("/api/orders",orderRouter)
+app.use("/api/orders", orderRouter)
 
 
 
-
-// *auth routes */
-app.use("/api/auth/me", authRouter)
-app.use("/api/auth/sign-up", authRouter)
-app.use("/api/admin/users", userRouter)
-app.use("/api/admin/users", userRouter)
-
-
-
-
-
+// *review routes */
+app.use("/api/reviews", reviewRouter)
 
 
 

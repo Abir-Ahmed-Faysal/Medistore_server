@@ -44,6 +44,8 @@ model User {
   medicines     Medicine[]
   reviews       Review[]
 
+  phone String?
+
   @@unique([email])
   @@map("user")
 }

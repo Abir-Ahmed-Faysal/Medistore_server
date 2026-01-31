@@ -7,9 +7,12 @@ export const createReview = async (
   next: NextFunction
 ) => {
   try {
+    
     const { id: userId } = req.user!;
     const { medicineId, orderItemId, content, rating } = req.body;
+    console.log(req.body);
     const numberRating = Number(rating);
+console.log("hit here");
 
     const review = await reviewService.createReview({
       medicineId,
@@ -18,7 +21,7 @@ export const createReview = async (
       numberRating,
       userId,
     });
-
+console.log("hit her by under review ",review);
     return res.status(201).json({
       success: true,
       message: "Review created successfully",

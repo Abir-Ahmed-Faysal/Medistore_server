@@ -104,7 +104,7 @@ export const createNewOrder = async (
  * GET USER ORDERS
  */
 const getUserOrders = async (userId: string) => {
-  return prisma.order.findMany({
+  const data = prisma.order.findMany({
     where: { userId },
     orderBy: { createdAt: "desc" },
     select: {
@@ -114,9 +114,11 @@ const getUserOrders = async (userId: string) => {
       totalAmount: true,
       orderItems: {
         select: {
+          id: true,
           quantity: true,
           medicineRef: {
             select: {
+              id: true,
               title: true,
               price: true,
               manufacturer: true,
@@ -139,6 +141,11 @@ const getUserOrders = async (userId: string) => {
       },
     },
   });
+
+  if (!data) {
+    throw new Error("No order found")
+  }
+  return data
 };
 
 
@@ -160,9 +167,11 @@ const getOrderDetails = async (
       createdAt: true,
       orderItems: {
         select: {
+          id: true,
           quantity: true,
           medicineRef: {
             select: {
+              id: true,
               title: true,
               price: true,
               description: true,
@@ -181,13 +190,15 @@ const getOrderDetails = async (
 
 const getSellerOrders = async ({ page = 1, limit = 20 }: GetOrdersParams) => {
   const orders = await prisma.order.findMany({
-   
+
     include: {
       userRef: {
         select: { id: true, name: true, email: true },
       },
       orderItems: {
+
         include: {
+
           medicineRef: {
             select: { id: true, title: true, price: true, stock: true },
           },
@@ -196,7 +207,9 @@ const getSellerOrders = async ({ page = 1, limit = 20 }: GetOrdersParams) => {
     },
   });
 
-  console.log(orders);
+  if (!orders) {
+    throw new Error("no order placed")
+  }
 
   const totalOrders = await prisma.order.count();
   return {

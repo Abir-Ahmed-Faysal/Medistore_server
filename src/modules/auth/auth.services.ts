@@ -7,9 +7,15 @@ type RegisterDTO = {
     password: string;
     image?: string;
     role?: "USER" | "SELLER";
+    phone?: string
 };
 
-const registerUser = async ({ name, email, password, image, role }: RegisterDTO) => {
+type CreateUserPayload = {
+  role:  "USER" | "SELLER"
+  phone?: string
+}
+
+const registerUser = async ({ name, email, password, image,phone, role }: RegisterDTO) => {
     if (!email || !password) {
         throw new Error("Email and password are required");
     }
@@ -19,7 +25,13 @@ const registerUser = async ({ name, email, password, image, role }: RegisterDTO)
 
 
 
-    // const authPayload = [name, email, password, image].filter((key, value) => value !== null || value !== undefined)
+const payload: CreateUserPayload = {
+  role: safeRole,
+}
+
+if (phone) {
+  payload.phone = phone
+}
 
 
 
@@ -27,18 +39,18 @@ const registerUser = async ({ name, email, password, image, role }: RegisterDTO)
 
         const user = await auth.api.signUpEmail({
             body: {
-                name, email, password, image,
+                name, email, password, image, phone
             },
         });
 
         // Role update
         const updatedUser = await tx.user.update({
             where: { id: user.user.id },
-            data: { role: safeRole },
+            data: { ...payload },
         });
 
-        
-        
+
+
         return updatedUser;
     });
 

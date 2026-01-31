@@ -16,12 +16,12 @@ const getCurrentUser = (req: Request, res: Response) => {
 
 const registerUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {name, email, password,image,callbackURL ,role} = req.body;
+    const {name, email, password,image,phone ,role} = req.body;
 
     
 
     const newUser = await registerService.registerUser({
-name, email, password,image,role
+name, email, password,image,phone,role
     });
 
     return sendResponse(res, {

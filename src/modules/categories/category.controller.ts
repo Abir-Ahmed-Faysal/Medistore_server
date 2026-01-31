@@ -5,6 +5,9 @@ import { categoryService } from "./category.service";
 const getAllCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const allCategories = await categoryService.getAllCategories();
+        if(!allCategories){
+            res.status(404).json({ success:false,message: "no category found" });
+        }
         res.status(200).json({ success: true,message: "category data retrieve successfully", data: allCategories });
     } catch (error: any) {
         next(error)
