@@ -54,11 +54,12 @@ const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
 
 
 const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
+    console.log("hit the add medicine route");
     try {
-        const { title, description, manufacturer, price, stock,  categoryId } = req.body;
-        const {id : sellerId} = req.user!;
+        const { title, description, manufacturer, price, stock, categoryId } = req.body;
+        const { id: sellerId } = req.user!;
 
-        if(!sellerId || typeof sellerId !== "string"){
+        if (!sellerId || typeof sellerId !== "string") {
             throw new Error("seller id not found")
         }
 
@@ -68,6 +69,8 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
         }
         const convertStock = Number(stock)
         const convertPrice = Number(price)
+
+        console.log(convertStock, convertPrice);
 
         const newMedicine = await medicineService.addMedicine({
             title,
@@ -91,22 +94,28 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
 
 const updateMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
+        const { id: sellerId } = req?.user!
         const { id } = req.params;
         const payload = req.body;
+
+        if (!sellerId || typeof sellerId !== "string") {
+            throw new Error("seller not found")
+        }
 
         if (!id || typeof id !== "string" || !payload) {
             throw new Error("id updated data not found")
         }
+        console.log(payload);
 
-        if(payload.price){
+        if (payload.price) {
             payload.price = Number(payload.price);
         }
-        if(payload.price){
+        if (payload.stock) {
             payload.stock = Number(payload.stock);
         }
 
 
-        const result = await medicineService.updateMedicine(id, payload);
+        const result = await medicineService.updateMedicine(id,sellerId, payload);
 
         sendResponse(res, {
             success: true,
@@ -120,11 +129,15 @@ const updateMedicine = async (req: Request, res: Response, next: NextFunction) =
 
 const removeMedicine = async (req: Request, res: Response, next: NextFunction) => {
     try {
+         const { id: sellerId } = req?.user!
         const { id } = req.params;
         if (!id || typeof id !== "string") {
             throw new Error("id not found")
         }
-        const result = await medicineService.removeMedicine(id);
+         if (!sellerId || typeof sellerId !== "string") {
+            throw new Error("seller not found")
+        }
+        const result = await medicineService.removeMedicine(id,sellerId);
         if (!result) {
             return sendResponse(res, { success: false, message: "medicine not found" }, 404)
         }
@@ -143,5 +156,5 @@ const removeMedicine = async (req: Request, res: Response, next: NextFunction) =
 
 
 export const medicineController = {
-    getAllMedicines, getMedicine, addMedicine, updateMedicine,removeMedicine
+    getAllMedicines, getMedicine, addMedicine, updateMedicine, removeMedicine
 }

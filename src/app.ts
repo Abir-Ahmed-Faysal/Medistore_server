@@ -14,11 +14,12 @@ const app: Application = express()
 
 app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }))
 
-app.all("/api/auth/sign-up/*splat", toNodeHandler(auth));
+
 app.all("/api/auth/sign-in/*splat", toNodeHandler(auth));
 
+// auth handler over the body parser
 app.use(express.json())
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
     res.send('MediStore server is running')
 })
 
@@ -40,8 +41,10 @@ app.use("/api/orders",orderRouter)
 
 
 
+
 // *auth routes */
 app.use("/api/auth/me", authRouter)
+app.use("/api/auth/sign-up", authRouter)
 app.use("/api/admin/users", userRouter)
 app.use("/api/admin/users", userRouter)
 

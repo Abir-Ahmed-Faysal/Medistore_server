@@ -135,7 +135,7 @@ model Order_item {
 
 model Medicine {
   id           String       @id @default(uuid())
-  title        String
+  title        String       @unique
   description  String       @db.Text
   manufacturer String
   price        Decimal      @db.Decimal(10, 2)

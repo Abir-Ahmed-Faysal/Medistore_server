@@ -267,10 +267,10 @@ export type MedicineOrderByWithRelationInput = {
 
 export type MedicineWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  title?: string
   AND?: Prisma.MedicineWhereInput | Prisma.MedicineWhereInput[]
   OR?: Prisma.MedicineWhereInput[]
   NOT?: Prisma.MedicineWhereInput | Prisma.MedicineWhereInput[]
-  title?: Prisma.StringFilter<"Medicine"> | string
   description?: Prisma.StringFilter<"Medicine"> | string
   manufacturer?: Prisma.StringFilter<"Medicine"> | string
   price?: Prisma.DecimalFilter<"Medicine"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -281,7 +281,7 @@ export type MedicineWhereUniqueInput = Prisma.AtLeast<{
   categoryRef?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
   orderItems?: Prisma.Order_itemListRelationFilter
   reviews?: Prisma.ReviewListRelationFilter
-}, "id">
+}, "id" | "title">
 
 export type MedicineOrderByWithAggregationInput = {
   id?: Prisma.SortOrder

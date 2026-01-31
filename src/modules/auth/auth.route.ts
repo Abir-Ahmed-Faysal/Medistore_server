@@ -1,10 +1,15 @@
 import express from 'express';
-import { getCurrentUser } from './auth.controller';
+import { authController } from './auth.controller';
 import { auth } from '../../middleware/auth';
+import { hitApi } from '../../middleware/hitChecker';
 
 
 const router = express.Router()
 
-router.get('/', auth(),  getCurrentUser)
+router.post('/email',hitApi, authController.registerUser)
+
+
+
+router.get('/', auth(), authController.getCurrentUser)
 
 export const authRouter = router

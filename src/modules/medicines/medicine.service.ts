@@ -79,7 +79,7 @@ const getAllMedicine = async ({
     }
 
 
-    if (minPrice || maxPrice) {
+    if (minPrice !== undefined || maxPrice !== undefined) {
         andCondition.push({
             price: {
                 gte: minPrice,
@@ -143,6 +143,10 @@ const addMedicine = async ({ title,
     convertStock,
     sellerId,
     categoryId, }: AddMedicineDTO) => {
+
+
+    console.log(typeof convertPrice, typeof convertStock);
+
     return prisma.medicine.create({
         data: {
             title,
@@ -159,18 +163,17 @@ const addMedicine = async ({ title,
     })
 }
 
-// {"title":"Napa Extra 500mg",
-// "description":"napa is a pain reliever, fever reducer, and anti-inflammatory medication used to treat mild to moderate pain and reduce fever.",
-// "manufacturer":"Square Pharmaceuticals Ltd.",
-// "price":5,
-// "stock":"500",
-// "categoryId":"6e5ea054-c3c6-4b1e-8795-6ab6b58a85d0"}
 
 const updateMedicine = async (
-    id: string,
+ 
+    id: string,   sellerId: string,
     payload: Omit<Medicine, "id">
 ): Promise<Medicine> => {
     console.log(payload);
+    const medicine = await prisma.medicine.findFirst({
+  where: { id, sellerId }
+})
+if (!medicine) throw new Error("Unauthorized")
 
     const result = await prisma.medicine.update({
         where: { id },
@@ -180,9 +183,13 @@ const updateMedicine = async (
     return result;
 };
 
-const removeMedicine = async (id: string): Promise<Medicine | null> => {
+const removeMedicine = async (id: string,sellerId:string): Promise<Medicine | null> => {
+
+    
+
+    
     const medicine = await prisma.medicine.findUnique({
-        where: { id }, select: { id: true }
+        where: { id ,sellerId}, select: { id: true }
     });
     if (!medicine) { throw new Error("Medicine not found") }
 
