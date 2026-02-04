@@ -54,9 +54,9 @@ const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
 
 
 const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
-    console.log("hit the add medicine route");
+   
     try {
-        const { title, description, manufacturer, price, stock, categoryId } = req.body;
+        const { title, description, manufacturer, price, stock, categoryId,image } = req.body;
         const { id: sellerId } = req.user!;
 
         if (!sellerId || typeof sellerId !== "string") {
@@ -64,7 +64,7 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
         }
 
 
-        if (!title || !description || !manufacturer || !price || !stock || !sellerId || !categoryId) {
+        if (!title || !description || !manufacturer || !price || !stock || !sellerId || !categoryId||!image) {
             return sendResponse(res, { success: false, message: "All fields are required" }, 400);
         }
         const convertStock = Number(stock)
@@ -73,6 +73,7 @@ const addMedicine = async (req: Request, res: Response, next: NextFunction) => {
         console.log(convertStock, convertPrice);
 
         const newMedicine = await medicineService.addMedicine({
+            image,
             title,
             description,
             manufacturer,

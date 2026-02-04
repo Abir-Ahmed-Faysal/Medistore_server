@@ -9,10 +9,11 @@ const getAllCategories = async () => {
   });
 };
 
-const createCategory = async (category_name: string) => {
+const createCategory = async (category_name: string,icon:string) => {
   return prisma.category.create({
     data: {
       category_name,
+      icon
     },
   });
 };

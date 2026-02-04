@@ -1288,6 +1288,7 @@ export type Order_itemScalarFieldEnum = (typeof Order_itemScalarFieldEnum)[keyof
 
 export const MedicineScalarFieldEnum = {
   id: 'id',
+  image: 'image',
   title: 'title',
   description: 'description',
   manufacturer: 'manufacturer',
@@ -1302,7 +1303,8 @@ export type MedicineScalarFieldEnum = (typeof MedicineScalarFieldEnum)[keyof typ
 
 export const CategoryScalarFieldEnum = {
   id: 'id',
-  category_name: 'category_name'
+  category_name: 'category_name',
+  icon: 'icon'
 } as const
 
 export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]

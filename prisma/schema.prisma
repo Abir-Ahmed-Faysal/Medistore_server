@@ -137,6 +137,7 @@ model Order_item {
 
 model Medicine {
   id           String       @id @default(uuid())
+  image        String
   title        String       @unique
   description  String       @db.Text
   manufacturer String
@@ -157,6 +158,7 @@ model Medicine {
 model Category {
   id            String     @id @default(uuid())
   category_name String     @unique
+  icon          String
   medicines     Medicine[]
 
   @@map("category")

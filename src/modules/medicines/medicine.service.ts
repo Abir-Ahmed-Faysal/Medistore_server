@@ -3,6 +3,7 @@ import { MedicineWhereInput } from "../../generated/models"
 import { prisma } from "../../lib/prisma"
 
 interface AddMedicineDTO {
+    image:string;
     title: string;
     description: string;
     manufacturer: string;
@@ -136,7 +137,7 @@ const getMedicine = async (id: string) => {
 }
 
 
-const addMedicine = async ({ title,
+const addMedicine = async ({ image, title,
     description,
     manufacturer,
     convertPrice,
