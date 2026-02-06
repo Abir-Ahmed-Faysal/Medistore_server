@@ -141,6 +141,7 @@ model Medicine {
   title        String       @unique
   description  String       @db.Text
   manufacturer String
+  isFeatured   Boolean      @default(false)
   price        Decimal      @db.Decimal(10, 2)
   stock        Int
   sellerId     String

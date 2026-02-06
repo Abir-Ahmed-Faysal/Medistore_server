@@ -1,45 +1,44 @@
-import { IOutputOptions } from "../types/paginationHelper";
-
-type IOptions = {
-    search?: string,
-    category?: string,
-    minPrice?: string,
-    maxPrice?: string;
-    manufacturer?: string;
-    page?: string;
+export type IOptions = {
+  search?: string
+  category?: string
+  minPrice?: string
+  maxPrice?: string
+  manufacturer?: string
+  page?: string
 }
 
 
 
-//!  /api/medicines?search=napa&category=painkiller&minPrice=50&maxPrice=200&manufacturer=Square
 
+export const PaginationHelperFunction = (option: IOptions) => {
+  const page = Math.max(Number(option.page) || 1, 1)
+  const limit = 15
+  const skip = (page - 1) * limit
 
-export const PaginationHelperFunction = (option: IOptions): IOutputOptions => {
-    const search = option.search || undefined
-    const category = option.category || undefined
-    const minPrice = Math.ceil(Number(option.minPrice) || 1)
-    const maxPrice = Number(option.maxPrice) || 50
-    const manufacturer = option.manufacturer || undefined
-    const page = Number(option.page) || 1
+  return {
+    ...(typeof option.search === "string" && option.search.trim()
+      ? { search: option.search.trim() }
+      : {}),
 
+    ...(typeof option.category === "string" && option.category.trim()
+      ? { category: option.category.trim() }
+      : {}),
 
+    ...(typeof option.manufacturer === "string" &&
+    option.manufacturer.trim()
+      ? { manufacturer: option.manufacturer.trim() }
+      : {}),
 
+    ...(option.minPrice !== undefined && !isNaN(Number(option.minPrice))
+      ? { minPrice: Number(option.minPrice) }
+      : {}),
 
-    const limit = 15
+    ...(option.maxPrice !== undefined && !isNaN(Number(option.maxPrice))
+      ? { maxPrice: Number(option.maxPrice) }
+      : {}),
 
-    const skip = (page - 1) * limit
-
-
-
-    return {
-        search,
-        category,
-        minPrice,
-        maxPrice,
-        manufacturer,
-        page, skip,limit
-    }
-
-
-};
-
+    page,
+    skip,
+    limit,
+  }
+}

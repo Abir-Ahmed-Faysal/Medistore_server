@@ -18,7 +18,7 @@ const getAllCategory = async (req: Request, res: Response, next: NextFunction) =
 const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { category_name, icon } = req.body;
-        if (!category_name || icon) {
+        if (!category_name || !icon) {
             return res.status(400).json({ success: false, message: "Category name is required" });
         }
         const newCategory = await categoryService.createCategory(category_name, icon);

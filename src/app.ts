@@ -17,6 +17,8 @@ app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }
 
 
 app.all("/api/auth/sign-in/*splat", toNodeHandler(auth));
+app.all("/api/auth/sign-out", toNodeHandler(auth));
+app.all("/api/auth/get-session", toNodeHandler(auth));
 
 // auth handler over the body parser
 app.use(express.json())

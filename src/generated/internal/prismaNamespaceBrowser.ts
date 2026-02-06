@@ -179,6 +179,7 @@ export const MedicineScalarFieldEnum = {
   title: 'title',
   description: 'description',
   manufacturer: 'manufacturer',
+  isFeatured: 'isFeatured',
   price: 'price',
   stock: 'stock',
   sellerId: 'sellerId',
