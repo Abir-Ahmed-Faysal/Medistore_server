@@ -13,16 +13,15 @@ router.patch('/user/:id/cancel', auth("USER"), orderController.updateUserOrderSt
 
 
 // *seller routes
-router.get("/seller",hitApi, auth("SELLER"), orderController.getSellerOrders);
+router.get("/seller", auth("SELLER"), orderController.getSellerOrders);
+router.get("/seller/:id",hitApi, auth("SELLER"), orderController.getSellerOrderDetails);
 router.patch('/seller/:id',hitApi, auth("SELLER"), orderController.updateOrderStatusBySeller);
 
 
 // *admin routes
-router.get('/admin', auth("ADMIN"),);
-router.get('/admin/:id', auth("ADMIN"),);
-router.patch('/admin/:id', auth("ADMIN"),);
-router.delete('/admin/:id', auth("ADMIN"),);
+router.get("/admin", auth("ADMIN"), orderController.getSellerOrders);
 
+router.get("/admin/:id",hitApi, auth("ADMIN"), orderController.getSellerOrderDetails);
 
 
 // {

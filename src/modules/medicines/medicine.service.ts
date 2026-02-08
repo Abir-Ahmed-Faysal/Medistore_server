@@ -15,149 +15,9 @@ interface AddMedicineDTO {
 
 }
 
-export const adminStatics = async () => {
-  const [
-    totalMedicine,
-    totalStock,
-    totalStockByCategory,
-    pendingOrder,
-    deliveredOrder,
-    cancelledOrders,
-    totalCategories,
-    medicinesWithLowStock,
-  ] = await Promise.all([
-    // Total medicines
-    prisma.medicine.count(),
 
-    // Total stock (sum of all medicine stock)
-    prisma.medicine.aggregate({
-      _sum: { stock: true },
-    }),
 
-    // Stock grouped by category
-    prisma.medicine.groupBy({
-      by: ["categoryId"],
-      _sum: { stock: true },
-    }),
 
-    // Pending orders
-    prisma.order.count({
-      where: { status: "PLACED" },
-    }),
-
-    // Delivered orders
-    prisma.order.count({
-      where: { status: "DELIVERED" },
-    }),
-
-    // Cancelled orders
-    prisma.order.count({
-      where: { status: "CANCELLED" },
-    }),
-
-    // Total categories
-    prisma.category.count(),
-
-    // Low stock medicines (for alert)
-    prisma.medicine.findMany({
-      where: {
-        stock: { lt: 10 },
-      },
-      select: {
-        id: true,
-        title: true,
-        stock: true,
-      },
-    }),
-  ]);
-
-  // Format stock by category
-  const stockByCategory = totalStockByCategory.map(item => ({
-    categoryId: item.categoryId,
-    stock: item._sum.stock ?? 0,
-  }));
-
-  return {
-    totalMedicine,
-    totalStock: totalStock._sum.stock ?? 0,
-    stockByCategory,
-    pendingOrder,
-    deliveredOrder,
-    cancelledOrders,
-    totalCategories,
-    lowStockMedicines: medicinesWithLowStock,
-  };
-};
-
-export const sellerStatics = async () => {
-  const [
-    totalMedicine,
-    totalStock,
-    stockByCategory,
-    pendingOrder,
-    deliveredOrder,
-    totalPerCategory,
-  ] = await Promise.all([
-    // total medicines
-    prisma.medicine.count(),
-
-    // total stock
-    prisma.medicine.aggregate({
-      _sum: { stock: true },
-    }),
-
-    // stock group by category
-    prisma.medicine.groupBy({
-      by: ["categoryId"],
-      _sum: { stock: true },
-    }),
-
-    // pending orders
-    prisma.order.count({
-      where: { status: "PLACED" },
-    }),
-
-    // delivered orders
-    prisma.order.count({
-      where: { status: "DELIVERED" },
-    }),
-
-    // category wise medicine count
-    prisma.category.findMany({
-      select: {
-        id: true,
-        category_name: true,
-        _count: {
-          select: {
-            medicines: true,
-          },
-        },
-      },
-    }),
-  ]);
-
-  // format stock by category
-  const formattedStockByCategory = stockByCategory.map(item => ({
-    categoryId: item.categoryId,
-    totalStock: item._sum.stock ?? 0,
-  }));
-
-  // ✅ REQUIRED FINAL SHAPE
-  const formattedCategory = totalPerCategory.map(c => ({
-    categoryId: c.id,
-    categoryName: c.category_name,
-    totalMedicine: c._count.medicines,
-  }));
-
-  return {
-    totalMedicine,
-    totalStock: totalStock._sum.stock ?? 0,
-    stockByCategory: formattedStockByCategory,
-    pendingOrder,
-    deliveredOrder,
-    totalPerCategory: formattedCategory,
-  };
-};
 
 
 
@@ -366,5 +226,5 @@ const removeMedicine = async (id: string, sellerId: string): Promise<Medicine | 
 }
 
 export const medicineService = {
-  getAllMedicine, getMedicine, addMedicine, updateMedicine, removeMedicine, sellerStatics,adminStatics
+  getAllMedicine, getMedicine, addMedicine, updateMedicine, removeMedicine
 }

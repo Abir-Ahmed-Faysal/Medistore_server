@@ -5,6 +5,12 @@ const getAllCategories = async () => {
     select: {
       id: true,
       category_name: true,
+      _count:{
+        select:{
+          medicines:{
+          }
+        }
+      }
     },
   });
 };

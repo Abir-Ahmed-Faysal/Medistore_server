@@ -6,7 +6,7 @@ import { hitApi } from '../../middleware/hitChecker';
 const router = express.Router();
 
 //user
-router.get('/statics', hitApi, medicineController.sellerStatics);
+
 router.get('/', hitApi, medicineController.getAllMedicines);
 router.get('/:id', hitApi, medicineController.getMedicine);
 

@@ -2,6 +2,11 @@ import { prisma } from "../../lib/prisma"
 
 const getAllUser = async () => {
     const users = await prisma.user.findMany({
+      where:{
+        role:{
+          in:["SELLER","USER"]
+        }
+      },
         select: {
             id: true,
             name: true,

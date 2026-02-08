@@ -11,6 +11,7 @@ import { categoryRouter } from './modules/categories/category.route';
 import { orderRouter } from './modules/orders/order.route';
 import { hitApi } from './middleware/hitChecker';
 import { reviewRouter } from './modules/reviews/review.route';
+import { staticsRouter } from './modules/statistics/statistics.routes';
 const app: Application = express()
 
 app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }))
@@ -32,7 +33,7 @@ app.get('/', (_, res) => {
 app.use("/api/auth/me", authRouter)
 app.use("/api/auth/sign-up", authRouter)
 app.use("/api/admin/users", userRouter)
-app.use("/api/admin/users", userRouter)
+// app.use("/api/admin/users", userRouter)
 
 
 
@@ -55,6 +56,11 @@ app.use("/api/orders", orderRouter)
 
 // *review routes */
 app.use("/api/reviews", reviewRouter)
+
+
+
+//*statistics
+app.use("/api/statistics",staticsRouter)
 
 
 

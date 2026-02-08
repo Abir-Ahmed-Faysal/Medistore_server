@@ -12,6 +12,7 @@ interface OrderItemInput {
 interface GetOrdersParams {
   page?: number;
   limit?: number;
+  status: "PLACED" | "PROCESSING" | "SHIPPED"| "DELIVERED"|undefined
 }
 
 /**
@@ -149,7 +150,6 @@ const getUserOrders = async (userId: string) => {
 };
 
 
-
 const getOrderDetails = async (
   userId: string,
   orderId: string
@@ -187,31 +187,76 @@ const getOrderDetails = async (
 };
 
 
+const cancelUserOrder = async (orderId: string, userId: string) => {
+  const order = await prisma.order.findUniqueOrThrow({
+    where: { id: orderId },
+  });
 
-const getSellerOrders = async ({ page = 1, limit = 20 }: GetOrdersParams) => {
-  const orders = await prisma.order.findMany({
+  if (order.userId !== userId) {
+    throw new Error("Unauthorized");
+  }
 
-    include: {
-      userRef: {
-        select: { id: true, name: true, email: true },
+  if (order.status !== ORDER_STATUS.PLACED) {
+    throw new Error("Only placed orders can be cancelled");
+  }
+
+  return prisma.order.update({
+    where: { id: orderId },
+    data: { status: ORDER_STATUS.CANCELLED },
+  });
+};
+
+
+
+
+
+
+
+const getSellerOrders = async ({
+  page = 1,
+  limit = 20,
+  status,
+}: GetOrdersParams) => {
+  const skip = (page - 1) * limit;
+
+  const where = {
+    ...(status && { status }),
+  };
+
+  const [orders, totalOrders] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: {
+        createdAt: "desc",
       },
-      orderItems: {
-
-        include: {
-
-          medicineRef: {
-            select: { id: true, title: true, price: true, stock: true },
+      include: {
+        userRef: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        orderItems: {
+          include: {
+            medicineRef: {
+              select: {
+                id: true,
+                title: true,
+                price: true,
+                stock: true,
+              },
+            },
           },
         },
       },
-    },
-  });
+    }),
 
-  if (!orders) {
-    throw new Error("no order placed")
-  }
+    prisma.order.count({ where }),
+  ]);
 
-  const totalOrders = await prisma.order.count();
   return {
     data: orders,
     meta: {
@@ -222,6 +267,38 @@ const getSellerOrders = async ({ page = 1, limit = 20 }: GetOrdersParams) => {
     },
   };
 };
+
+
+
+const getSellerOrderDetails = async (orderId: string) => {
+  const data = await prisma.order.findUnique({
+    where: {
+      id: orderId
+    }, select: {
+      id: true, address: true,
+      createdAt: true, status: true, orderItems: {
+        select: {
+          quantity: true,
+          medicineRef: {
+            select: {
+              title: true, id: true,
+              manufacturer: true, price: true
+            }
+          }
+        }
+      },
+      totalAmount: true, userRef: {
+        select: {
+          name: true, email: true, phone: true
+        }
+      }
+    }
+  })
+  return data
+}
+
+
+
 
 
 
@@ -265,29 +342,12 @@ const updateOrderStatus = async (
 
 
 
-const cancelUserOrder = async (orderId: string, userId: string) => {
-  const order = await prisma.order.findUniqueOrThrow({
-    where: { id: orderId },
-  });
 
-  if (order.userId !== userId) {
-    throw new Error("Unauthorized");
-  }
-
-  if (order.status !== ORDER_STATUS.PLACED) {
-    throw new Error("Only placed orders can be cancelled");
-  }
-
-  return prisma.order.update({
-    where: { id: orderId },
-    data: { status: ORDER_STATUS.CANCELLED },
-  });
-};
 
 
 
 
 
 export const orderService = {
-  getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatus, cancelUserOrder
+  getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatus, cancelUserOrder, getSellerOrderDetails
 }

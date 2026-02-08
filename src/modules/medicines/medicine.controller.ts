@@ -4,44 +4,9 @@ import { medicineService } from "./medicine.service"
 import { sendResponse } from "../../middleware/sendRes"
 
 
-const adminStatics = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const result = await medicineService.adminStatics()
-        if (!result) {
-            return sendResponse(res, {
-                success: false, message: "No data found"
-            }, 404)
-        }
-        return sendResponse(res, {
-            success: true,
-            message: "Seller statistics retrieved successfully",
-            data: result,
-        }, 200)
-
-    } catch (error) {
-        next(error)
-    }}
 
 
 
-
-const sellerStatics = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const result = await medicineService.sellerStatics()
-        if (!result) {
-            return sendResponse(res, {
-                success: false, message: "No data found"
-            }, 404)
-        }
-        return sendResponse(res, {
-            success: true,
-            message: "Seller statistics retrieved successfully",
-            data: result,
-        }, 200)
-
-    } catch (error) {
-        next(error)
-    }}
 
 
     const getAllMedicines = async (
@@ -192,5 +157,5 @@ const sellerStatics = async (req: Request, res: Response, next: NextFunction) =>
 
 
     export const medicineController = {
-        getAllMedicines, getMedicine, addMedicine, updateMedicine, removeMedicine, sellerStatics,adminStatics
+        getAllMedicines, getMedicine, addMedicine, updateMedicine, removeMedicine, 
     }

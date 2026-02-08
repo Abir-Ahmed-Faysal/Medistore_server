@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../middleware/sendRes";
 import { orderService } from "./order.service";
 import { ORDER_STATUS } from "../../generated/enums";
+import { ORDER_STATUSES, OrderStatus } from "../../types/sellerOrder";
 
 
 // ! user route
@@ -67,7 +68,7 @@ export const getUserOrders = async (
         }
 
         const orders = await orderService.getUserOrders(userId);
-      
+
 
         return sendResponse(
             res,
@@ -86,7 +87,7 @@ const getOrderDetails = async (
     res: Response,
     next: NextFunction
 ) => {
-    console.log("man hit ehr");
+
     try {
         const { id: userId } = req.user as { id: string };
         const { id: orderId } = req.params;
@@ -111,6 +112,7 @@ const getOrderDetails = async (
         next(error);
     }
 };
+
 
 export const updateUserOrderStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -149,8 +151,16 @@ const getSellerOrders = async (req: Request, res: Response) => {
     try {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 20;
+        const rawStatus=req.query.status
 
-        const orders = await orderService.getSellerOrders({ page, limit });
+        const status: OrderStatus | undefined =
+      typeof rawStatus === "string" &&
+      ORDER_STATUSES.includes(rawStatus.toUpperCase() as OrderStatus)
+        ? (rawStatus.toUpperCase() as OrderStatus)
+        : undefined;
+
+
+        const orders = await orderService.getSellerOrders({ page, limit,status });
 
         res.status(200).json({
             success: true,
@@ -163,6 +173,45 @@ const getSellerOrders = async (req: Request, res: Response) => {
             success: false,
             message: "Something went wrong while fetching orders",
         });
+    }
+};
+
+
+const getSellerOrderDetails = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+
+    try {
+        const { id: orderId } = req.params;
+
+
+        if (!orderId || typeof orderId !== "string") {
+            return sendResponse(
+                res,
+                { success: false, message: "Order ID is required" },
+                400
+            );
+        }
+
+        const order = await orderService.getSellerOrderDetails(orderId);
+
+        if (!order) {
+            return sendResponse(
+                res,
+                { success: false, message: "No order found", },
+                404
+            );
+        }
+
+        return sendResponse(
+            res,
+            { success: true, message: "Order details fetched", data: order },
+            200
+        );
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -207,5 +256,5 @@ const updateOrderStatusBySeller = async (
 
 
 export const orderController = {
-    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatusBySeller, updateUserOrderStatus
+    getUserOrders, getOrderDetails, createNewOrder, getSellerOrders, updateOrderStatusBySeller, updateUserOrderStatus, getSellerOrderDetails
 };
