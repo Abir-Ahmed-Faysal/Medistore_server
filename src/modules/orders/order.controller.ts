@@ -223,8 +223,12 @@ const updateOrderStatusBySeller = async (
     next: NextFunction
 ) => {
     try {
+         console.log("hit the api");
+         console.log(req.body);
         const { id: orderId } = req.params;
         const status = req.body.status as ORDER_STATUS;
+
+       
 
         if (!orderId || !Object.values(ORDER_STATUS).includes(status)) {
             return sendResponse(res, { success: false, message: "Invalid input" }, 400);
@@ -237,6 +241,9 @@ const updateOrderStatusBySeller = async (
                 400
             );
         }
+
+          console.log("hit the 2nd api");
+         console.log(req.body);
 
         const updatedOrder = await orderService.updateOrderStatus(
             orderId as string,

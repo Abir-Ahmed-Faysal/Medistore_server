@@ -1,5 +1,15 @@
 import { prisma } from "../../lib/prisma"
 
+
+type UpdateUserPayload = {
+  name?: string;
+  phone?: string;
+  image?: string;
+  address?: string;
+};
+
+
+
 const getAllUser = async () => {
     const users = await prisma.user.findMany({
       where:{
@@ -74,6 +84,22 @@ const unBanUser = async (id: string) => {
 };
 
 
+
+
+
+export const updateUser = async (
+  id: string,
+  payload: UpdateUserPayload
+) => {
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: payload,
+    });
+    return updatedUser;
+};
+
+
+
 export const userService = {
-    getAllUser, banUser,unBanUser
+    getAllUser, banUser,unBanUser,updateUser
 }

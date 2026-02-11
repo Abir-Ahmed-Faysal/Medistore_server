@@ -33,7 +33,7 @@ app.get('/', (_, res) => {
 app.use("/api/auth/me", authRouter)
 app.use("/api/auth/sign-up", authRouter)
 app.use("/api/admin/users", userRouter)
-// app.use("/api/admin/users", userRouter)
+ app.use("/api/user", userRouter)
 
 
 

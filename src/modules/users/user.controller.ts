@@ -43,11 +43,11 @@ const banUser = async (req: Request, res: Response, next: NextFunction) => {
 
 const unBanUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-         const { id } = req.params
+        const { id } = req.params
         if (!id || typeof id !== "string") {
             throw new Error("id not found")
         }
-        
+
         const user = await userService.unBanUser(id);
 
         return sendResponse(res, {
@@ -60,6 +60,73 @@ const unBanUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 };
 
+
+
+export const updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { name, image, phone, address } = req.body;
+        const { id } = req.user as { id?: string };
+
+        if (!id || typeof id !== "string") {
+            return sendResponse(
+                res,
+                { success: false, message: "Forbidden" },
+                403
+            );
+        }
+
+
+        const payload = {
+            name,
+            image,
+            phone,
+            address,
+        };
+
+
+        const updatePayload = Object.fromEntries(
+            Object.entries(payload).filter(
+                ([_, value]) =>
+                    value !== undefined &&
+                    value !== null &&
+                    value !== ""
+            )
+        );
+
+        if (Object.keys(updatePayload).length === 0) {
+            return sendResponse(
+                res,
+                { success: false, message: "Nothing to update" },
+                400
+            );
+        }
+
+
+        const data = await userService.updateUser(id, updatePayload);
+
+        if (!data) {
+            return sendResponse(
+                res,
+                { success: false, message: "Update failed" },
+                400
+            );
+        }
+
+        return sendResponse(
+            res,
+            { success: true, message: "Updated successfully", data },
+            200
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const userController = {
-    getAllUser, banUser, unBanUser
+    getAllUser, banUser, unBanUser,updateUser
 }

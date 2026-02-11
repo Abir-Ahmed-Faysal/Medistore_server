@@ -5,9 +5,10 @@ const getAllCategories = async () => {
     select: {
       id: true,
       category_name: true,
-      _count:{
-        select:{
-          medicines:{
+      icon: true,
+      _count: {
+        select: {
+          medicines: {
           }
         }
       }
@@ -15,7 +16,7 @@ const getAllCategories = async () => {
   });
 };
 
-const createCategory = async (category_name: string,icon:string) => {
+const createCategory = async (category_name: string, icon: string) => {
   return prisma.category.create({
     data: {
       category_name,
@@ -27,12 +28,13 @@ const createCategory = async (category_name: string,icon:string) => {
 const updateCategory = async (id: string, category_name: string) => {
   return prisma.category.update({
     where: { id },
-    data: { category_name },
+    data: { id, category_name },
   });
 };
 
 const deleteCategory = async (id: string) => {
-  return prisma.category.delete({
+  
+  return await prisma.category.delete({
     where: { id },
   });
 };

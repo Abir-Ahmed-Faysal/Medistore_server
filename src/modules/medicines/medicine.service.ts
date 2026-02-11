@@ -138,7 +138,18 @@ const getMedicine = async (id: string) => {
         select: {
           category_name: true
         }
+      },
+      reviews: {
+        select: {
+          content: true,
+          id: true,userRef:{
+            select:{
+              name:true
+            }
+          }
+        }
       }
+
     }
   })
 

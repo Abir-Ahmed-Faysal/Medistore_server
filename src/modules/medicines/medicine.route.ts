@@ -12,7 +12,7 @@ router.get('/:id', hitApi, medicineController.getMedicine);
 
 
 //*seller */
-router.post('/', auth("SELLER"), medicineController.addMedicine);
+router.post('/',hitApi, auth("SELLER"), medicineController.addMedicine);
 router.patch('/:id', auth("SELLER"), medicineController.updateMedicine);
 router.delete('/:id', auth("SELLER"), medicineController.removeMedicine);
 

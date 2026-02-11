@@ -18,6 +18,7 @@ const getAllCategory = async (req: Request, res: Response, next: NextFunction) =
 const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { category_name, icon } = req.body;
+        console.log(category_name, icon, "form the check");
         if (!category_name || !icon) {
             return res.status(400).json({ success: false, message: "Category name is required" });
         }
@@ -49,8 +50,11 @@ const updateCategory = async (req: Request, res: Response, next: NextFunction) =
 const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        await categoryService.deleteCategory(id as string);
-        res.status(200).json({ success: true, message: "Category deleted successfully" });
+        const data = await categoryService.deleteCategory(id as string);
+        if (!data) {
+            res.status(404).json({ success: false, message: "category deleted failed" });
+        }
+        res.status(200).json({ success: true, message: "Category deleted successfully",data });
     } catch (error: any) {
         next(error)
     }
