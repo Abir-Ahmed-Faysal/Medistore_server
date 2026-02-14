@@ -44,8 +44,7 @@ model User {
   orders        Order[]
   medicines     Medicine[]
   reviews       Review[]
-
-  phone String?
+  phone         String?
 
   @@unique([email])
   @@map("user")
@@ -129,7 +128,6 @@ model Order_item {
   medicineId   String
   medicineRef  Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
   quantity     Int
-  reviews      Review[]
 
   @@index([orderId])
   @@index([medicineId])
@@ -167,18 +165,15 @@ model Category {
 }
 
 model Review {
-  id            String     @id @default(uuid())
-  content       String
-  medicineId    String
-  medicineRef   Medicine   @relation(fields: [medicineId], references: [id], onDelete: Cascade)
-  userId        String
-  userRef       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  order_itemId  String
-  rating        Int
-  order_itemRef Order_item @relation(fields: [order_itemId], references: [id], onDelete: Cascade)
+  id          String   @id @default(uuid())
+  content     String
+  medicineId  String
+  medicineRef Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)
+  userId      String   
+  userRef     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating      Int
 
   @@index([medicineId])
   @@index([userId])
-  @@index([order_itemId])
   @@map("review")
 }

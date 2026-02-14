@@ -39,7 +39,6 @@ export type ReviewMinAggregateOutputType = {
   content: string | null
   medicineId: string | null
   userId: string | null
-  order_itemId: string | null
   rating: number | null
 }
 
@@ -48,7 +47,6 @@ export type ReviewMaxAggregateOutputType = {
   content: string | null
   medicineId: string | null
   userId: string | null
-  order_itemId: string | null
   rating: number | null
 }
 
@@ -57,7 +55,6 @@ export type ReviewCountAggregateOutputType = {
   content: number
   medicineId: number
   userId: number
-  order_itemId: number
   rating: number
   _all: number
 }
@@ -76,7 +73,6 @@ export type ReviewMinAggregateInputType = {
   content?: true
   medicineId?: true
   userId?: true
-  order_itemId?: true
   rating?: true
 }
 
@@ -85,7 +81,6 @@ export type ReviewMaxAggregateInputType = {
   content?: true
   medicineId?: true
   userId?: true
-  order_itemId?: true
   rating?: true
 }
 
@@ -94,7 +89,6 @@ export type ReviewCountAggregateInputType = {
   content?: true
   medicineId?: true
   userId?: true
-  order_itemId?: true
   rating?: true
   _all?: true
 }
@@ -190,7 +184,6 @@ export type ReviewGroupByOutputType = {
   content: string
   medicineId: string
   userId: string
-  order_itemId: string
   rating: number
   _count: ReviewCountAggregateOutputType | null
   _avg: ReviewAvgAggregateOutputType | null
@@ -222,11 +215,9 @@ export type ReviewWhereInput = {
   content?: Prisma.StringFilter<"Review"> | string
   medicineId?: Prisma.StringFilter<"Review"> | string
   userId?: Prisma.StringFilter<"Review"> | string
-  order_itemId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
   medicineRef?: Prisma.XOR<Prisma.MedicineScalarRelationFilter, Prisma.MedicineWhereInput>
   userRef?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  order_itemRef?: Prisma.XOR<Prisma.Order_itemScalarRelationFilter, Prisma.Order_itemWhereInput>
 }
 
 export type ReviewOrderByWithRelationInput = {
@@ -234,11 +225,9 @@ export type ReviewOrderByWithRelationInput = {
   content?: Prisma.SortOrder
   medicineId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  order_itemId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   medicineRef?: Prisma.MedicineOrderByWithRelationInput
   userRef?: Prisma.UserOrderByWithRelationInput
-  order_itemRef?: Prisma.Order_itemOrderByWithRelationInput
 }
 
 export type ReviewWhereUniqueInput = Prisma.AtLeast<{
@@ -249,11 +238,9 @@ export type ReviewWhereUniqueInput = Prisma.AtLeast<{
   content?: Prisma.StringFilter<"Review"> | string
   medicineId?: Prisma.StringFilter<"Review"> | string
   userId?: Prisma.StringFilter<"Review"> | string
-  order_itemId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
   medicineRef?: Prisma.XOR<Prisma.MedicineScalarRelationFilter, Prisma.MedicineWhereInput>
   userRef?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
-  order_itemRef?: Prisma.XOR<Prisma.Order_itemScalarRelationFilter, Prisma.Order_itemWhereInput>
 }, "id">
 
 export type ReviewOrderByWithAggregationInput = {
@@ -261,7 +248,6 @@ export type ReviewOrderByWithAggregationInput = {
   content?: Prisma.SortOrder
   medicineId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  order_itemId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
   _count?: Prisma.ReviewCountOrderByAggregateInput
   _avg?: Prisma.ReviewAvgOrderByAggregateInput
@@ -278,7 +264,6 @@ export type ReviewScalarWhereWithAggregatesInput = {
   content?: Prisma.StringWithAggregatesFilter<"Review"> | string
   medicineId?: Prisma.StringWithAggregatesFilter<"Review"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Review"> | string
-  order_itemId?: Prisma.StringWithAggregatesFilter<"Review"> | string
   rating?: Prisma.IntWithAggregatesFilter<"Review"> | number
 }
 
@@ -288,7 +273,6 @@ export type ReviewCreateInput = {
   rating: number
   medicineRef: Prisma.MedicineCreateNestedOneWithoutReviewsInput
   userRef: Prisma.UserCreateNestedOneWithoutReviewsInput
-  order_itemRef: Prisma.Order_itemCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateInput = {
@@ -296,7 +280,6 @@ export type ReviewUncheckedCreateInput = {
   content: string
   medicineId: string
   userId: string
-  order_itemId: string
   rating: number
 }
 
@@ -306,7 +289,6 @@ export type ReviewUpdateInput = {
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   medicineRef?: Prisma.MedicineUpdateOneRequiredWithoutReviewsNestedInput
   userRef?: Prisma.UserUpdateOneRequiredWithoutReviewsNestedInput
-  order_itemRef?: Prisma.Order_itemUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateInput = {
@@ -314,7 +296,6 @@ export type ReviewUncheckedUpdateInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   medicineId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -323,7 +304,6 @@ export type ReviewCreateManyInput = {
   content: string
   medicineId: string
   userId: string
-  order_itemId: string
   rating: number
 }
 
@@ -338,7 +318,6 @@ export type ReviewUncheckedUpdateManyInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   medicineId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -357,7 +336,6 @@ export type ReviewCountOrderByAggregateInput = {
   content?: Prisma.SortOrder
   medicineId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  order_itemId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
 }
 
@@ -370,7 +348,6 @@ export type ReviewMaxOrderByAggregateInput = {
   content?: Prisma.SortOrder
   medicineId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  order_itemId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
 }
 
@@ -379,7 +356,6 @@ export type ReviewMinOrderByAggregateInput = {
   content?: Prisma.SortOrder
   medicineId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  order_itemId?: Prisma.SortOrder
   rating?: Prisma.SortOrder
 }
 
@@ -426,48 +402,6 @@ export type ReviewUncheckedUpdateManyWithoutUserRefNestedInput = {
   connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
   update?: Prisma.ReviewUpdateWithWhereUniqueWithoutUserRefInput | Prisma.ReviewUpdateWithWhereUniqueWithoutUserRefInput[]
   updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutUserRefInput | Prisma.ReviewUpdateManyWithWhereWithoutUserRefInput[]
-  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
-}
-
-export type ReviewCreateNestedManyWithoutOrder_itemRefInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput> | Prisma.ReviewCreateWithoutOrder_itemRefInput[] | Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput | Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput[]
-  createMany?: Prisma.ReviewCreateManyOrder_itemRefInputEnvelope
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-}
-
-export type ReviewUncheckedCreateNestedManyWithoutOrder_itemRefInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput> | Prisma.ReviewCreateWithoutOrder_itemRefInput[] | Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput | Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput[]
-  createMany?: Prisma.ReviewCreateManyOrder_itemRefInputEnvelope
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-}
-
-export type ReviewUpdateManyWithoutOrder_itemRefNestedInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput> | Prisma.ReviewCreateWithoutOrder_itemRefInput[] | Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput | Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput[]
-  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutOrder_itemRefInput | Prisma.ReviewUpsertWithWhereUniqueWithoutOrder_itemRefInput[]
-  createMany?: Prisma.ReviewCreateManyOrder_itemRefInputEnvelope
-  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutOrder_itemRefInput | Prisma.ReviewUpdateWithWhereUniqueWithoutOrder_itemRefInput[]
-  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutOrder_itemRefInput | Prisma.ReviewUpdateManyWithWhereWithoutOrder_itemRefInput[]
-  deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
-}
-
-export type ReviewUncheckedUpdateManyWithoutOrder_itemRefNestedInput = {
-  create?: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput> | Prisma.ReviewCreateWithoutOrder_itemRefInput[] | Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput[]
-  connectOrCreate?: Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput | Prisma.ReviewCreateOrConnectWithoutOrder_itemRefInput[]
-  upsert?: Prisma.ReviewUpsertWithWhereUniqueWithoutOrder_itemRefInput | Prisma.ReviewUpsertWithWhereUniqueWithoutOrder_itemRefInput[]
-  createMany?: Prisma.ReviewCreateManyOrder_itemRefInputEnvelope
-  set?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  disconnect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  delete?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  connect?: Prisma.ReviewWhereUniqueInput | Prisma.ReviewWhereUniqueInput[]
-  update?: Prisma.ReviewUpdateWithWhereUniqueWithoutOrder_itemRefInput | Prisma.ReviewUpdateWithWhereUniqueWithoutOrder_itemRefInput[]
-  updateMany?: Prisma.ReviewUpdateManyWithWhereWithoutOrder_itemRefInput | Prisma.ReviewUpdateManyWithWhereWithoutOrder_itemRefInput[]
   deleteMany?: Prisma.ReviewScalarWhereInput | Prisma.ReviewScalarWhereInput[]
 }
 
@@ -518,14 +452,12 @@ export type ReviewCreateWithoutUserRefInput = {
   content: string
   rating: number
   medicineRef: Prisma.MedicineCreateNestedOneWithoutReviewsInput
-  order_itemRef: Prisma.Order_itemCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateWithoutUserRefInput = {
   id?: string
   content: string
   medicineId: string
-  order_itemId: string
   rating: number
 }
 
@@ -563,50 +495,7 @@ export type ReviewScalarWhereInput = {
   content?: Prisma.StringFilter<"Review"> | string
   medicineId?: Prisma.StringFilter<"Review"> | string
   userId?: Prisma.StringFilter<"Review"> | string
-  order_itemId?: Prisma.StringFilter<"Review"> | string
   rating?: Prisma.IntFilter<"Review"> | number
-}
-
-export type ReviewCreateWithoutOrder_itemRefInput = {
-  id?: string
-  content: string
-  rating: number
-  medicineRef: Prisma.MedicineCreateNestedOneWithoutReviewsInput
-  userRef: Prisma.UserCreateNestedOneWithoutReviewsInput
-}
-
-export type ReviewUncheckedCreateWithoutOrder_itemRefInput = {
-  id?: string
-  content: string
-  medicineId: string
-  userId: string
-  rating: number
-}
-
-export type ReviewCreateOrConnectWithoutOrder_itemRefInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  create: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput>
-}
-
-export type ReviewCreateManyOrder_itemRefInputEnvelope = {
-  data: Prisma.ReviewCreateManyOrder_itemRefInput | Prisma.ReviewCreateManyOrder_itemRefInput[]
-  skipDuplicates?: boolean
-}
-
-export type ReviewUpsertWithWhereUniqueWithoutOrder_itemRefInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  update: Prisma.XOR<Prisma.ReviewUpdateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedUpdateWithoutOrder_itemRefInput>
-  create: Prisma.XOR<Prisma.ReviewCreateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedCreateWithoutOrder_itemRefInput>
-}
-
-export type ReviewUpdateWithWhereUniqueWithoutOrder_itemRefInput = {
-  where: Prisma.ReviewWhereUniqueInput
-  data: Prisma.XOR<Prisma.ReviewUpdateWithoutOrder_itemRefInput, Prisma.ReviewUncheckedUpdateWithoutOrder_itemRefInput>
-}
-
-export type ReviewUpdateManyWithWhereWithoutOrder_itemRefInput = {
-  where: Prisma.ReviewScalarWhereInput
-  data: Prisma.XOR<Prisma.ReviewUpdateManyMutationInput, Prisma.ReviewUncheckedUpdateManyWithoutOrder_itemRefInput>
 }
 
 export type ReviewCreateWithoutMedicineRefInput = {
@@ -614,14 +503,12 @@ export type ReviewCreateWithoutMedicineRefInput = {
   content: string
   rating: number
   userRef: Prisma.UserCreateNestedOneWithoutReviewsInput
-  order_itemRef: Prisma.Order_itemCreateNestedOneWithoutReviewsInput
 }
 
 export type ReviewUncheckedCreateWithoutMedicineRefInput = {
   id?: string
   content: string
   userId: string
-  order_itemId: string
   rating: number
 }
 
@@ -655,7 +542,6 @@ export type ReviewCreateManyUserRefInput = {
   id?: string
   content: string
   medicineId: string
-  order_itemId: string
   rating: number
 }
 
@@ -664,14 +550,12 @@ export type ReviewUpdateWithoutUserRefInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   medicineRef?: Prisma.MedicineUpdateOneRequiredWithoutReviewsNestedInput
-  order_itemRef?: Prisma.Order_itemUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateWithoutUserRefInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   medicineId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -679,39 +563,6 @@ export type ReviewUncheckedUpdateManyWithoutUserRefInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   medicineId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-}
-
-export type ReviewCreateManyOrder_itemRefInput = {
-  id?: string
-  content: string
-  medicineId: string
-  userId: string
-  rating: number
-}
-
-export type ReviewUpdateWithoutOrder_itemRefInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-  medicineRef?: Prisma.MedicineUpdateOneRequiredWithoutReviewsNestedInput
-  userRef?: Prisma.UserUpdateOneRequiredWithoutReviewsNestedInput
-}
-
-export type ReviewUncheckedUpdateWithoutOrder_itemRefInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  medicineId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  rating?: Prisma.IntFieldUpdateOperationsInput | number
-}
-
-export type ReviewUncheckedUpdateManyWithoutOrder_itemRefInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  content?: Prisma.StringFieldUpdateOperationsInput | string
-  medicineId?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -719,7 +570,6 @@ export type ReviewCreateManyMedicineRefInput = {
   id?: string
   content: string
   userId: string
-  order_itemId: string
   rating: number
 }
 
@@ -728,14 +578,12 @@ export type ReviewUpdateWithoutMedicineRefInput = {
   content?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
   userRef?: Prisma.UserUpdateOneRequiredWithoutReviewsNestedInput
-  order_itemRef?: Prisma.Order_itemUpdateOneRequiredWithoutReviewsNestedInput
 }
 
 export type ReviewUncheckedUpdateWithoutMedicineRefInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -743,7 +591,6 @@ export type ReviewUncheckedUpdateManyWithoutMedicineRefInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   content?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  order_itemId?: Prisma.StringFieldUpdateOperationsInput | string
   rating?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -754,11 +601,9 @@ export type ReviewSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   content?: boolean
   medicineId?: boolean
   userId?: boolean
-  order_itemId?: boolean
   rating?: boolean
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -766,11 +611,9 @@ export type ReviewSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   content?: boolean
   medicineId?: boolean
   userId?: boolean
-  order_itemId?: boolean
   rating?: boolean
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -778,11 +621,9 @@ export type ReviewSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   content?: boolean
   medicineId?: boolean
   userId?: boolean
-  order_itemId?: boolean
   rating?: boolean
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["review"]>
 
 export type ReviewSelectScalar = {
@@ -790,25 +631,21 @@ export type ReviewSelectScalar = {
   content?: boolean
   medicineId?: boolean
   userId?: boolean
-  order_itemId?: boolean
   rating?: boolean
 }
 
-export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "medicineId" | "userId" | "order_itemId" | "rating", ExtArgs["result"]["review"]>
+export type ReviewOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "content" | "medicineId" | "userId" | "rating", ExtArgs["result"]["review"]>
 export type ReviewInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }
 export type ReviewIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }
 export type ReviewIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   medicineRef?: boolean | Prisma.MedicineDefaultArgs<ExtArgs>
   userRef?: boolean | Prisma.UserDefaultArgs<ExtArgs>
-  order_itemRef?: boolean | Prisma.Order_itemDefaultArgs<ExtArgs>
 }
 
 export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -816,14 +653,12 @@ export type $ReviewPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     medicineRef: Prisma.$MedicinePayload<ExtArgs>
     userRef: Prisma.$UserPayload<ExtArgs>
-    order_itemRef: Prisma.$Order_itemPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     content: string
     medicineId: string
     userId: string
-    order_itemId: string
     rating: number
   }, ExtArgs["result"]["review"]>
   composites: {}
@@ -1221,7 +1056,6 @@ export interface Prisma__ReviewClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   medicineRef<T extends Prisma.MedicineDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MedicineDefaultArgs<ExtArgs>>): Prisma.Prisma__MedicineClient<runtime.Types.Result.GetResult<Prisma.$MedicinePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   userRef<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  order_itemRef<T extends Prisma.Order_itemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Order_itemDefaultArgs<ExtArgs>>): Prisma.Prisma__Order_itemClient<runtime.Types.Result.GetResult<Prisma.$Order_itemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1255,7 +1089,6 @@ export interface ReviewFieldRefs {
   readonly content: Prisma.FieldRef<"Review", 'String'>
   readonly medicineId: Prisma.FieldRef<"Review", 'String'>
   readonly userId: Prisma.FieldRef<"Review", 'String'>
-  readonly order_itemId: Prisma.FieldRef<"Review", 'String'>
   readonly rating: Prisma.FieldRef<"Review", 'Int'>
 }
     

@@ -1,18 +1,17 @@
 import express from 'express';
 import { medicineController } from './medicine.controller';
 import { auth } from '../../middleware/auth';
-import { hitApi } from '../../middleware/hitChecker';
 
 const router = express.Router();
 
 //user
 
-router.get('/', hitApi, medicineController.getAllMedicines);
-router.get('/:id', hitApi, medicineController.getMedicine);
+router.get('/', medicineController.getAllMedicines);
+router.get('/:id',  medicineController.getMedicine);
 
 
 //*seller */
-router.post('/',hitApi, auth("SELLER"), medicineController.addMedicine);
+router.post('/', auth("SELLER"), medicineController.addMedicine);
 router.patch('/:id', auth("SELLER"), medicineController.updateMedicine);
 router.delete('/:id', auth("SELLER"), medicineController.removeMedicine);
 

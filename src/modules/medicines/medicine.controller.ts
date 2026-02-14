@@ -70,7 +70,6 @@ import { sendResponse } from "../../middleware/sendRes"
             const convertStock = Number(stock)
             const convertPrice = Number(price)
 
-            console.log(convertStock, convertPrice);
 
             const newMedicine = await medicineService.addMedicine({
                 image,
@@ -106,7 +105,7 @@ import { sendResponse } from "../../middleware/sendRes"
             if (!id || typeof id !== "string" || !payload) {
                 throw new Error("id updated data not found")
             }
-            console.log(payload);
+           
 
             if (payload.price) {
                 payload.price = Number(payload.price);

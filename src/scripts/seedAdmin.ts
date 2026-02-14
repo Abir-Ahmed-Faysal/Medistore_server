@@ -1,6 +1,8 @@
 import { prisma } from "../lib/prisma";
 import { auth } from "../lib/auth";
 
+
+
 async function seedAdmin() {
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -26,6 +28,8 @@ async function seedAdmin() {
       password: adminPassword,
     },
   });
+
+  console.log(data, "from the admin seeding function ");
 
   if (!data?.user) {
     throw new Error("Admin signup failed");

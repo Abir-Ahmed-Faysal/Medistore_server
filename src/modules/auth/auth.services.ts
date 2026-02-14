@@ -11,11 +11,11 @@ type RegisterDTO = {
 };
 
 type CreateUserPayload = {
-  role:  "USER" | "SELLER"
-  phone?: string
+    role: "USER" | "SELLER"
+    phone?: string
 }
 
-const registerUser = async ({ name, email, password, image,phone, role }: RegisterDTO) => {
+const registerUser = async ({ name, email, password, image, phone, role }: RegisterDTO) => {
     if (!email || !password) {
         throw new Error("Email and password are required");
     }
@@ -25,36 +25,34 @@ const registerUser = async ({ name, email, password, image,phone, role }: Regist
 
 
 
-const payload: CreateUserPayload = {
-  role: safeRole,
-}
+    const payload: CreateUserPayload = {
+        role: safeRole,
+    }
 
-if (phone) {
-  payload.phone = phone
-}
+    if (phone) {
+        payload.phone = phone
+    }
 
-
-
-    const result = await prisma.$transaction(async (tx) => {
-
-        const user = await auth.api.signUpEmail({
-            body: {
-                name, email, password, image, phone
-            },
-        });
-
-        // Role update
-        const updatedUser = await tx.user.update({
-            where: { id: user.user.id },
-            data: { ...payload },
-        });
-
-
-
-        return updatedUser;
+    const user = await auth.api.signUpEmail({
+        body: {
+            name, email, password, image, phone
+        },
     });
 
-    return result;
+    if (!user) {
+        throw new Error("failed to register data")
+    }
+
+
+    const updatedUser = await prisma.user.update({
+        where: { id: user.user.id },
+        data: { ...payload }
+    });
+
+
+
+
+    return updatedUser;
 }
 
 

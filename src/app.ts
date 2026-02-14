@@ -9,7 +9,7 @@ import { universalErrorHandler } from './middleware/universalError';
 import { medicineRouter } from './modules/medicines/medicine.route';
 import { categoryRouter } from './modules/categories/category.route';
 import { orderRouter } from './modules/orders/order.route';
-import { hitApi } from './middleware/hitChecker';
+
 import { reviewRouter } from './modules/reviews/review.route';
 import { staticsRouter } from './modules/statistics/statistics.routes';
 const app: Application = express()

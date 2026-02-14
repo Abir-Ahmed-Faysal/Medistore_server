@@ -11,24 +11,25 @@ type UpdateUserPayload = {
 
 
 const getAllUser = async () => {
-    const users = await prisma.user.findMany({
-      where:{
-        role:{
-          in:["SELLER","USER"]
-        }
-      },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            banned: true,
-            role: true
-        },
-    });
-    return users;
+  const users = await prisma.user.findMany({
+    where: {
+      role: {
+        in: ["SELLER", "USER"]
+      }
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      banned: true,
+      role: true
+    },
+  });
+  return users;
 };
 
 const banUser = async (id: string) => {
+  console.log("hit the ban user service");
   const user = await prisma.user.findUnique({
     where: { id },
     select: { id: true, role: true, banned: true }
@@ -40,8 +41,10 @@ const banUser = async (id: string) => {
 
 
   if (user.banned) {
+ 
     throw new Error("User already banned");
   }
+
 
   return prisma.user.update({
     where: { id },
@@ -63,11 +66,11 @@ const unBanUser = async (id: string) => {
   });
 
   if (!user) {
-    throw new Error( "User not found");
+    throw new Error("User not found");
   }
 
   if (!user.banned) {
-    throw new Error( "User is not banned");
+    throw new Error("User is not banned");
   }
 
   return prisma.user.update({
@@ -91,15 +94,15 @@ export const updateUser = async (
   id: string,
   payload: UpdateUserPayload
 ) => {
-    const updatedUser = await prisma.user.update({
-      where: { id },
-      data: payload,
-    });
-    return updatedUser;
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: payload,
+  });
+  return updatedUser;
 };
 
 
 
 export const userService = {
-    getAllUser, banUser,unBanUser,updateUser
+  getAllUser, banUser, unBanUser, updateUser
 }

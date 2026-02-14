@@ -1,12 +1,12 @@
 import express from 'express';
 import { orderController } from './order.controller';
 import { auth } from '../../middleware/auth';
-import { hitApi } from '../../middleware/hitChecker';
+
 
 const router = express.Router();
 
 // * user routes
-router.get('/user',hitApi, auth("USER"), orderController.getUserOrders);
+router.get('/user', auth("USER"), orderController.getUserOrders);
 router.get('/user/:id', auth("USER"), orderController.getOrderDetails);
 router.post('/user', auth("USER"), orderController.createNewOrder);
 router.patch('/user/:id/cancel', auth("USER"), orderController.updateUserOrderStatus);
@@ -14,14 +14,14 @@ router.patch('/user/:id/cancel', auth("USER"), orderController.updateUserOrderSt
 
 // *seller routes
 router.get("/seller", auth("SELLER"), orderController.getSellerOrders);
-router.get("/seller/:id",hitApi, auth("SELLER"), orderController.getSellerOrderDetails);
-router.patch('/seller/:id',hitApi, auth("SELLER"), orderController.updateOrderStatusBySeller);
+router.get("/seller/:id", auth("SELLER"), orderController.getSellerOrderDetails);
+router.patch('/seller/:id', auth("SELLER"), orderController.updateOrderStatusBySeller);
 
 
 // *admin routes
 router.get("/admin", auth("ADMIN"), orderController.getSellerOrders);
 
-router.get("/admin/:id",hitApi, auth("ADMIN"), orderController.getSellerOrderDetails);
+router.get("/admin/:id", auth("ADMIN"), orderController.getSellerOrderDetails);
 
 
 // {

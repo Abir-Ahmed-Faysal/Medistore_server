@@ -1,20 +1,20 @@
 import express from 'express';
 import { reviewController } from './reviews.controller';
-import { hitApi } from '../../middleware/hitChecker';
 import { auth } from '../../middleware/auth';
+import { hitApi } from '../../middleware/hitApi';
 const router = express.Router();
 
 
-router.post('/',auth(), reviewController.createReview);
+router.get('/:id/eligibility', auth(), reviewController.isEligible);
+
+
+router.post('/:id', auth("USER"), reviewController.createReview);
 
 // {
-//   "medicineId": "ade67970-732b-464b-97c4-a8341eff0a5c",
-//   "order_ItemId": "382211aa-dcc3-463a-b5c5-096cfb9108e4",
+//   "medicineId": "36383943-ac1e-4754-9c95-277caaa3acd8",
 //   "content": "This medicine worked very well. Fast delivery and good packaging.",
 //   "rating": 5
 // }
-
-
 
 
 export { router as reviewRouter };

@@ -9,81 +9,76 @@ interface CreateReviewPayload {
 }
 
 const createReview = async (payload: CreateReviewPayload) => {
-  const { medicineId, orderItemId, content,   numberRating, userId } = payload;
-
-  return prisma.$transaction(async (tx) => {
-    
-    const orderItem = await tx.order_item.findUnique({
-      where: { id: orderItemId },
-      select: {
-        id: true,
-        medicineId: true,
-        userOrderRef: {
-          select: { userId: true },
-        },
-      },
-    });
-
-    if (!orderItem) {
-      throw new Error("Order item not found");
-    }
-
-    if (orderItem.userOrderRef.userId !== userId) {
-      throw new Error("You are not allowed to review this order item");
-    }
-
-    if (orderItem.medicineId !== medicineId) {
-      throw new Error("Medicine does not match order item");
-    }
+  const { medicineId, content, numberRating, userId } = payload;
 
 
-    // 3. Create review
-    return tx.review.create({
-      data: {
-        content,
-        rating:numberRating,
-        medicineId,
-        userId,
-        order_itemId: orderItemId,
-      },
-    });
+  const medicine = await prisma.medicine.findUnique({
+    where: { id: medicineId },
+    select: { id: true }
   });
-};
 
-const getReviewsByMedicine = async (medicineId: string) => {
-  return prisma.review.findMany({
-    where: { medicineId },
-    orderBy: { id: "desc" },
-    include: {
-      userRef: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
+  if (!medicine) {
+    console.log("hit the medicine to the condition");
+    throw new Error("No medicine found");
+  }
+
+  const orderItem = await prisma.order_item.findFirst({
+    where: {
+      medicineId,
+      userOrderRef: {
+        userId
+      }
     },
+    select: { id: true, medicineId: true }
   });
+
+  if (!orderItem) {
+    throw new Error("unable to create review")
+  }
+
+  const creteReview = await prisma.review.create({
+    data: {
+      content, rating: numberRating, medicineId, userId
+    }
+  })
+
+  return creteReview
 };
 
 
-const getMyReviews = async (userId: string) => {
-  return prisma.review.findMany({
-    where: { userId },
-    orderBy: { id: "desc" },
-    include: {
-      medicineRef: {
-        select: {
-          id: true,
-          title: true,
-        },
-      },
+
+const isEligible = async (userId: string, medicineId: string) => {
+  console.log("hit th eserver  for find  frrist ");
+
+  const medicine = await prisma.medicine.findUnique({
+    where: { id: medicineId },
+    select: { id: true }
+  });
+
+  if (!medicine) {
+    console.log("hit the medicine to the condition");
+    throw new Error("No medicine found");
+  }
+
+  console.log("hit th eserver  for find medicine", medicine);
+
+  const orderItem = await prisma.order_item.findFirst({
+    where: {
+      medicineId,
+      userOrderRef: {
+        userId
+      }
     },
+    select: { id: true, medicineId: true }
   });
+
+  console.log("hit th eserver  for get orderitem", orderItem);
+
+  return orderItem;
 };
+
 
 export const reviewService = {
   createReview,
-  getReviewsByMedicine,
-  getMyReviews,
+  isEligible
 };

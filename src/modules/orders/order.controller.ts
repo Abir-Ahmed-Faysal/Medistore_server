@@ -21,7 +21,7 @@ export const createNewOrder = async (
         const { id: userId } = req.user as { id: string };
 
         const payload = req.body
-        // console.log("checking pay",payload);
+       
 
         const { address, items, quantity } = payload;
 
@@ -60,7 +60,7 @@ export const getUserOrders = async (
     next: NextFunction
 ) => {
     try {
-        console.log("hit here vvvvv");
+      
         const { id: userId } = req.user as { id: string };
 
         if (!userId) {
@@ -91,7 +91,7 @@ const getOrderDetails = async (
     try {
         const { id: userId } = req.user as { id: string };
         const { id: orderId } = req.params;
-        console.log("hti the detail");
+        
 
         if (!orderId || typeof orderId !== "string") {
             return sendResponse(
@@ -223,8 +223,7 @@ const updateOrderStatusBySeller = async (
     next: NextFunction
 ) => {
     try {
-         console.log("hit the api");
-         console.log(req.body);
+       
         const { id: orderId } = req.params;
         const status = req.body.status as ORDER_STATUS;
 
@@ -242,8 +241,7 @@ const updateOrderStatusBySeller = async (
             );
         }
 
-          console.log("hit the 2nd api");
-         console.log(req.body);
+     
 
         const updatedOrder = await orderService.updateOrderStatus(
             orderId as string,

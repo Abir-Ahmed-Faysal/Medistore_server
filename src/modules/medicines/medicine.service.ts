@@ -17,12 +17,6 @@ interface AddMedicineDTO {
 
 
 
-
-
-
-
-
-
 const getAllMedicine = async ({
   search,
   category,
@@ -70,7 +64,7 @@ const getAllMedicine = async ({
     })
   }
 
-  // 🗂 CATEGORY
+  //  CATEGORY
   if (category) {
     andCondition.push({
       categoryRef: {
@@ -82,7 +76,7 @@ const getAllMedicine = async ({
     })
   }
 
-  // 🏭 MANUFACTURER
+  //  MANUFACTURER
   if (manufacturer) {
     andCondition.push({
       manufacturer: {
@@ -92,7 +86,7 @@ const getAllMedicine = async ({
     })
   }
 
-  // 💰 PRICE RANGE (optional)
+  //  PRICE RANGE (optional)
   if (minPrice !== undefined || maxPrice !== undefined) {
     andCondition.push({
       price: {
@@ -142,9 +136,11 @@ const getMedicine = async (id: string) => {
       reviews: {
         select: {
           content: true,
-          id: true,userRef:{
-            select:{
-              name:true
+          rating: true,
+          id: true, userRef: {
+            select: {
+              name: true,
+              image: true
             }
           }
         }
@@ -208,7 +204,7 @@ const updateMedicine = async (
   id: string, sellerId: string,
   payload: Omit<Medicine, "id">
 ): Promise<Medicine> => {
-  console.log(payload);
+
   const medicine = await prisma.medicine.findFirst({
     where: { id, sellerId }
   })
