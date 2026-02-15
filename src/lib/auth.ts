@@ -1,11 +1,11 @@
-import { betterAuth, boolean } from "better-auth";
+import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "./prisma";
 
 
 export const auth = betterAuth({
-    baseURL: process.env.BETTER_AUTH_URL,
-    trustedOrigins:[process.env.FRONTEND_URL as string,"https://medi-store-nu.vercel.app"],
+    baseURL: process.env.APP_URL,
+    trustedOrigins: [process.env.PROD_APP_URL as string, "https://medi-store-nu.vercel.app"],
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
@@ -15,22 +15,21 @@ export const auth = betterAuth({
     user: {
         additionalFields: {
             phone: {
-                type:"string",
-               
-                required:false
+                type: "string",
+
+                required: false
             }
         }
+    }, session: {
+        cookieCache: { enabled: true, maxAge: 5 * 60 },
+        advanced: {
+            cookiePrefix: "better-auth",
+            useSecureCookies: process.env.NODE_ENV === "production", crossSubDomainCookies: {
+                enabled: false,
+            }, disabledCSRFCheck: true,
+        }
     }
-    , cookies: {
-    sessionToken: {
-      name: "__Secure-better-auth.session_token",
-      options: {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none", 
-      },
-    },
-  },
+    ,
     socialProviders: {
         google: {
             prompt: "select_account consent",

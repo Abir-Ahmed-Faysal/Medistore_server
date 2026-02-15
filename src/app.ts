@@ -14,7 +14,29 @@ import { reviewRouter } from './modules/reviews/review.route';
 import { staticsRouter } from './modules/statistics/statistics.routes';
 const app: Application = express()
 
-app.use(cors({ origin: [process.env.FRONTEND_URL as string], credentials: true }))
+const allowedOrigins = [process.env.APP_URL, process.env.PROD_APP_URL].filter(Boolean)
+
+console.log("here is the array ", allowedOrigins);
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true)
+        const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) ||
+            /^https:\/\/.*\.vercel\.app$/.test(origin);
+
+            if(isAllowed){
+                callback(null,true)
+            }else{
+                callback(new Error(`Origin ${origin} not allowed by CORS`))
+            }
+
+    }, credentials: true,
+    methods:["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], allowedHeaders:["Content-Type", "Authorization", "Cookie"],
+exposedHeaders: ["Set-Cookie"],
+}))
+
+
+
 
 
 app.all("/api/auth/sign-in/*splat", toNodeHandler(auth));
@@ -33,7 +55,7 @@ app.get('/', (_, res) => {
 app.use("/api/auth/me", authRouter)
 app.use("/api/auth/sign-up", authRouter)
 app.use("/api/admin/users", userRouter)
- app.use("/api/user", userRouter)
+app.use("/api/user", userRouter)
 
 
 
@@ -60,7 +82,7 @@ app.use("/api/reviews", reviewRouter)
 
 
 //*statistics
-app.use("/api/statistics",staticsRouter)
+app.use("/api/statistics", staticsRouter)
 
 
 

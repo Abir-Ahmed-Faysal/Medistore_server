@@ -28,14 +28,14 @@ var config = {
   "clientVersion": "7.3.0",
   "engineVersion": "9d6ad21cbbceab97458517b147a6a09ff43aa735",
   "activeProvider": "postgresql",
-  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum ORDER_STATUS {\n  PLACED\n  PROCESSING\n  SHIPPED\n  DELIVERED\n  CANCELLED\n}\n\nenum UserRole {\n  ADMIN\n  USER\n  SELLER\n}\n\nmodel User {\n  id            String     @id\n  name          String\n  email         String\n  emailVerified Boolean    @default(false)\n  image         String?\n  role          UserRole   @default(USER)\n  address       String?\n  banned        Boolean    @default(false)\n  createdAt     DateTime   @default(now())\n  updatedAt     DateTime   @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n  profile       Profile?\n  orders        Order[]\n  medicines     Medicine[]\n  reviews       Review[]\n\n  phone String?\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Profile {\n  id          String    @id @default(uuid())\n  bio         String?\n  dateOfBirth DateTime?\n  userId      String    @unique\n  userRef     User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          String       @id @default(uuid())\n  userId      String\n  userRef     User         @relation(fields: [userId], references: [id], onDelete: Cascade)\n  address     String       @db.VarChar(255)\n  totalAmount Decimal      @default(0) @db.Decimal(10, 2)\n  status      ORDER_STATUS @default(PLACED)\n  createdAt   DateTime     @default(now())\n  updatedAt   DateTime     @updatedAt\n  orderItems  Order_item[]\n\n  @@index([userId])\n  @@map("order")\n}\n\nmodel Order_item {\n  id           String   @id @default(uuid())\n  orderId      String\n  userOrderRef Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  medicineId   String\n  medicineRef  Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  quantity     Int\n  reviews      Review[]\n\n  @@index([orderId])\n  @@index([medicineId])\n  @@map("order_item")\n}\n\nmodel Medicine {\n  id           String       @id @default(uuid())\n  image        String\n  title        String       @unique\n  description  String       @db.Text\n  manufacturer String\n  isFeatured   Boolean      @default(false)\n  price        Decimal      @db.Decimal(10, 2)\n  stock        Int\n  sellerId     String\n  sellerRef    User         @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  categoryId   String\n  categoryRef  Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n  orderItems   Order_item[]\n  reviews      Review[]\n\n  @@index([sellerId])\n  @@index([categoryId])\n  @@map("medicine")\n}\n\nmodel Category {\n  id            String     @id @default(uuid())\n  category_name String     @unique\n  icon          String\n  medicines     Medicine[]\n\n  @@map("category")\n}\n\nmodel Review {\n  id            String     @id @default(uuid())\n  content       String\n  medicineId    String\n  medicineRef   Medicine   @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  userId        String\n  userRef       User       @relation(fields: [userId], references: [id], onDelete: Cascade)\n  order_itemId  String\n  rating        Int\n  order_itemRef Order_item @relation(fields: [order_itemId], references: [id], onDelete: Cascade)\n\n  @@index([medicineId])\n  @@index([userId])\n  @@index([order_itemId])\n  @@map("review")\n}\n',
+  "inlineSchema": '// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = "prisma-client"\n  output   = "../src/generated"\n}\n\ndatasource db {\n  provider = "postgresql"\n}\n\nenum ORDER_STATUS {\n  PLACED\n  PROCESSING\n  SHIPPED\n  DELIVERED\n  CANCELLED\n}\n\nenum UserRole {\n  ADMIN\n  USER\n  SELLER\n}\n\nmodel User {\n  id            String     @id\n  name          String\n  email         String\n  emailVerified Boolean    @default(false)\n  image         String?\n  role          UserRole   @default(USER)\n  address       String?\n  banned        Boolean    @default(false)\n  createdAt     DateTime   @default(now())\n  updatedAt     DateTime   @updatedAt\n  sessions      Session[]\n  accounts      Account[]\n  profile       Profile?\n  orders        Order[]\n  medicines     Medicine[]\n  reviews       Review[]\n  phone         String?\n\n  @@unique([email])\n  @@map("user")\n}\n\nmodel Session {\n  id        String   @id\n  expiresAt DateTime\n  token     String\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  ipAddress String?\n  userAgent String?\n  userId    String\n  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n\n  @@unique([token])\n  @@index([userId])\n  @@map("session")\n}\n\nmodel Account {\n  id                    String    @id\n  accountId             String\n  providerId            String\n  userId                String\n  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n  accessToken           String?\n  refreshToken          String?\n  idToken               String?\n  accessTokenExpiresAt  DateTime?\n  refreshTokenExpiresAt DateTime?\n  scope                 String?\n  password              String?\n  createdAt             DateTime  @default(now())\n  updatedAt             DateTime  @updatedAt\n\n  @@index([userId])\n  @@map("account")\n}\n\nmodel Verification {\n  id         String   @id\n  identifier String\n  value      String\n  expiresAt  DateTime\n  createdAt  DateTime @default(now())\n  updatedAt  DateTime @updatedAt\n\n  @@index([identifier])\n  @@map("verification")\n}\n\nmodel Profile {\n  id          String    @id @default(uuid())\n  bio         String?\n  dateOfBirth DateTime?\n  userId      String    @unique\n  userRef     User      @relation(fields: [userId], references: [id], onDelete: Cascade)\n}\n\nmodel Order {\n  id          String       @id @default(uuid())\n  userId      String\n  userRef     User         @relation(fields: [userId], references: [id], onDelete: Cascade)\n  address     String       @db.VarChar(255)\n  totalAmount Decimal      @default(0) @db.Decimal(10, 2)\n  status      ORDER_STATUS @default(PLACED)\n  createdAt   DateTime     @default(now())\n  updatedAt   DateTime     @updatedAt\n  orderItems  Order_item[]\n\n  @@index([userId])\n  @@map("order")\n}\n\nmodel Order_item {\n  id           String   @id @default(uuid())\n  orderId      String\n  userOrderRef Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)\n  medicineId   String\n  medicineRef  Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  quantity     Int\n\n  @@index([orderId])\n  @@index([medicineId])\n  @@map("order_item")\n}\n\nmodel Medicine {\n  id           String       @id @default(uuid())\n  image        String\n  title        String       @unique\n  description  String       @db.Text\n  manufacturer String\n  isFeatured   Boolean      @default(false)\n  price        Decimal      @db.Decimal(10, 2)\n  stock        Int\n  sellerId     String\n  sellerRef    User         @relation(fields: [sellerId], references: [id], onDelete: Cascade)\n  categoryId   String\n  categoryRef  Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)\n  orderItems   Order_item[]\n  reviews      Review[]\n\n  @@index([sellerId])\n  @@index([categoryId])\n  @@map("medicine")\n}\n\nmodel Category {\n  id            String     @id @default(uuid())\n  category_name String     @unique\n  icon          String\n  medicines     Medicine[]\n\n  @@map("category")\n}\n\nmodel Review {\n  id          String   @id @default(uuid())\n  content     String\n  medicineId  String\n  medicineRef Medicine @relation(fields: [medicineId], references: [id], onDelete: Cascade)\n  userId      String\n  userRef     User     @relation(fields: [userId], references: [id], onDelete: Cascade)\n  rating      Int\n\n  @@index([medicineId])\n  @@index([userId])\n  @@map("review")\n}\n',
   "runtimeDataModel": {
     "models": {},
     "enums": {},
     "types": {}
   }
 };
-config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"UserRole"},{"name":"address","kind":"scalar","type":"String"},{"name":"banned","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"profile","kind":"object","type":"Profile","relationName":"ProfileToUser"},{"name":"orders","kind":"object","type":"Order","relationName":"OrderToUser"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"MedicineToUser"},{"name":"reviews","kind":"object","type":"Review","relationName":"ReviewToUser"},{"name":"phone","kind":"scalar","type":"String"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Profile":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"bio","kind":"scalar","type":"String"},{"name":"dateOfBirth","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"ProfileToUser"}],"dbName":null},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"OrderToUser"},{"name":"address","kind":"scalar","type":"String"},{"name":"totalAmount","kind":"scalar","type":"Decimal"},{"name":"status","kind":"enum","type":"ORDER_STATUS"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"Order_item","relationName":"OrderToOrder_item"}],"dbName":"order"},"Order_item":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"userOrderRef","kind":"object","type":"Order","relationName":"OrderToOrder_item"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicineRef","kind":"object","type":"Medicine","relationName":"MedicineToOrder_item"},{"name":"quantity","kind":"scalar","type":"Int"},{"name":"reviews","kind":"object","type":"Review","relationName":"Order_itemToReview"}],"dbName":"order_item"},"Medicine":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"title","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"manufacturer","kind":"scalar","type":"String"},{"name":"isFeatured","kind":"scalar","type":"Boolean"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"stock","kind":"scalar","type":"Int"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"sellerRef","kind":"object","type":"User","relationName":"MedicineToUser"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"categoryRef","kind":"object","type":"Category","relationName":"CategoryToMedicine"},{"name":"orderItems","kind":"object","type":"Order_item","relationName":"MedicineToOrder_item"},{"name":"reviews","kind":"object","type":"Review","relationName":"MedicineToReview"}],"dbName":"medicine"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"category_name","kind":"scalar","type":"String"},{"name":"icon","kind":"scalar","type":"String"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"CategoryToMedicine"}],"dbName":"category"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"content","kind":"scalar","type":"String"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicineRef","kind":"object","type":"Medicine","relationName":"MedicineToReview"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"ReviewToUser"},{"name":"order_itemId","kind":"scalar","type":"String"},{"name":"rating","kind":"scalar","type":"Int"},{"name":"order_itemRef","kind":"object","type":"Order_item","relationName":"Order_itemToReview"}],"dbName":"review"}},"enums":{},"types":{}}');
+config.runtimeDataModel = JSON.parse('{"models":{"User":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"name","kind":"scalar","type":"String"},{"name":"email","kind":"scalar","type":"String"},{"name":"emailVerified","kind":"scalar","type":"Boolean"},{"name":"image","kind":"scalar","type":"String"},{"name":"role","kind":"enum","type":"UserRole"},{"name":"address","kind":"scalar","type":"String"},{"name":"banned","kind":"scalar","type":"Boolean"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"sessions","kind":"object","type":"Session","relationName":"SessionToUser"},{"name":"accounts","kind":"object","type":"Account","relationName":"AccountToUser"},{"name":"profile","kind":"object","type":"Profile","relationName":"ProfileToUser"},{"name":"orders","kind":"object","type":"Order","relationName":"OrderToUser"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"MedicineToUser"},{"name":"reviews","kind":"object","type":"Review","relationName":"ReviewToUser"},{"name":"phone","kind":"scalar","type":"String"}],"dbName":"user"},"Session":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"token","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"ipAddress","kind":"scalar","type":"String"},{"name":"userAgent","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"SessionToUser"}],"dbName":"session"},"Account":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"accountId","kind":"scalar","type":"String"},{"name":"providerId","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"user","kind":"object","type":"User","relationName":"AccountToUser"},{"name":"accessToken","kind":"scalar","type":"String"},{"name":"refreshToken","kind":"scalar","type":"String"},{"name":"idToken","kind":"scalar","type":"String"},{"name":"accessTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"refreshTokenExpiresAt","kind":"scalar","type":"DateTime"},{"name":"scope","kind":"scalar","type":"String"},{"name":"password","kind":"scalar","type":"String"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"account"},"Verification":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"identifier","kind":"scalar","type":"String"},{"name":"value","kind":"scalar","type":"String"},{"name":"expiresAt","kind":"scalar","type":"DateTime"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"}],"dbName":"verification"},"Profile":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"bio","kind":"scalar","type":"String"},{"name":"dateOfBirth","kind":"scalar","type":"DateTime"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"ProfileToUser"}],"dbName":null},"Order":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"OrderToUser"},{"name":"address","kind":"scalar","type":"String"},{"name":"totalAmount","kind":"scalar","type":"Decimal"},{"name":"status","kind":"enum","type":"ORDER_STATUS"},{"name":"createdAt","kind":"scalar","type":"DateTime"},{"name":"updatedAt","kind":"scalar","type":"DateTime"},{"name":"orderItems","kind":"object","type":"Order_item","relationName":"OrderToOrder_item"}],"dbName":"order"},"Order_item":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"orderId","kind":"scalar","type":"String"},{"name":"userOrderRef","kind":"object","type":"Order","relationName":"OrderToOrder_item"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicineRef","kind":"object","type":"Medicine","relationName":"MedicineToOrder_item"},{"name":"quantity","kind":"scalar","type":"Int"}],"dbName":"order_item"},"Medicine":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"image","kind":"scalar","type":"String"},{"name":"title","kind":"scalar","type":"String"},{"name":"description","kind":"scalar","type":"String"},{"name":"manufacturer","kind":"scalar","type":"String"},{"name":"isFeatured","kind":"scalar","type":"Boolean"},{"name":"price","kind":"scalar","type":"Decimal"},{"name":"stock","kind":"scalar","type":"Int"},{"name":"sellerId","kind":"scalar","type":"String"},{"name":"sellerRef","kind":"object","type":"User","relationName":"MedicineToUser"},{"name":"categoryId","kind":"scalar","type":"String"},{"name":"categoryRef","kind":"object","type":"Category","relationName":"CategoryToMedicine"},{"name":"orderItems","kind":"object","type":"Order_item","relationName":"MedicineToOrder_item"},{"name":"reviews","kind":"object","type":"Review","relationName":"MedicineToReview"}],"dbName":"medicine"},"Category":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"category_name","kind":"scalar","type":"String"},{"name":"icon","kind":"scalar","type":"String"},{"name":"medicines","kind":"object","type":"Medicine","relationName":"CategoryToMedicine"}],"dbName":"category"},"Review":{"fields":[{"name":"id","kind":"scalar","type":"String"},{"name":"content","kind":"scalar","type":"String"},{"name":"medicineId","kind":"scalar","type":"String"},{"name":"medicineRef","kind":"object","type":"Medicine","relationName":"MedicineToReview"},{"name":"userId","kind":"scalar","type":"String"},{"name":"userRef","kind":"object","type":"User","relationName":"ReviewToUser"},{"name":"rating","kind":"scalar","type":"Int"}],"dbName":"review"}},"enums":{},"types":{}}');
 async function decodeBase64AsWasm(wasmBase64) {
   const { Buffer: Buffer2 } = await import("buffer");
   const wasmArray = Buffer2.from(wasmBase64, "base64");
@@ -222,7 +222,6 @@ var ReviewScalarFieldEnum = {
   content: "content",
   medicineId: "medicineId",
   userId: "userId",
-  order_itemId: "order_itemId",
   rating: "rating"
 };
 var SortOrder = {
@@ -259,8 +258,8 @@ var prisma = new PrismaClient({ adapter });
 
 // src/lib/auth.ts
 var auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
-  trustedOrigins: [process.env.FRONTEND_URL, "https://medi-store-nu.vercel.app"],
+  baseURL: process.env.APP_URL,
+  trustedOrigins: [process.env.PROD_APP_URL, "https://medi-store-nu.vercel.app"],
   database: prismaAdapter(prisma, {
     provider: "postgresql"
   }),
@@ -275,14 +274,15 @@ var auth = betterAuth({
       }
     }
   },
-  cookies: {
-    sessionToken: {
-      name: "__Secure-better-auth.session_token",
-      options: {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none"
-      }
+  session: {
+    cookieCache: { enabled: true, maxAge: 5 * 60 },
+    advanced: {
+      cookiePrefix: "better-auth",
+      useSecureCookies: process.env.NODE_ENV === "production",
+      crossSubDomainCookies: {
+        enabled: false
+      },
+      disabledCSRFCheck: true
     }
   },
   socialProviders: {
@@ -788,10 +788,12 @@ var getMedicine = async (id) => {
       reviews: {
         select: {
           content: true,
+          rating: true,
           id: true,
           userRef: {
             select: {
-              name: true
+              name: true,
+              image: true
             }
           }
         }
@@ -840,6 +842,38 @@ var addMedicine = async ({
     }
   });
 };
+var bulkAddMedicine = async (medicines, sellerId) => {
+  if (!medicines.length) {
+    throw new Error("Medicine list is empty");
+  }
+  const categoryIds = [...new Set(medicines.map((m) => m.categoryId))];
+  const existingCategories = await prisma.category.findMany({
+    where: {
+      id: { in: categoryIds }
+    },
+    select: { id: true }
+  });
+  const existingCategoryIds = existingCategories.map((c) => c.id);
+  const invalidCategories = categoryIds.filter(
+    (id) => !existingCategoryIds.includes(id)
+  );
+  if (invalidCategories.length > 0) {
+    throw new Error(`Invalid categoryIds: ${invalidCategories.join(", ")}`);
+  }
+  const formattedData = medicines.map((m) => ({
+    image: m.image,
+    title: m.title,
+    description: m.description,
+    manufacturer: m.manufacturer,
+    price: Number(m.price),
+    stock: Number(m.stock),
+    categoryId: m.categoryId,
+    sellerId
+  }));
+  return prisma.medicine.createMany({
+    data: formattedData
+  });
+};
 var updateMedicine = async (id, sellerId, payload) => {
   const medicine = await prisma.medicine.findFirst({
     where: { id, sellerId }
@@ -869,7 +903,8 @@ var medicineService = {
   getMedicine,
   addMedicine,
   updateMedicine,
-  removeMedicine
+  removeMedicine,
+  bulkAddMedicine
 };
 
 // src/modules/medicines/medicine.controller.ts
@@ -885,6 +920,37 @@ var getAllMedicines = async (req, res, next) => {
         data: result
       },
       200
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+var bulkAddMedicineController = async (req, res, next) => {
+  try {
+    const { medicines } = req.body;
+    const { id: sellerId } = req.user;
+    if (!sellerId) {
+      throw new Error("Seller not found");
+    }
+    if (!Array.isArray(medicines) || medicines.length === 0) {
+      return sendResponse(
+        res,
+        { success: false, message: "Medicine array is required" },
+        400
+      );
+    }
+    const result = await medicineService.bulkAddMedicine(
+      medicines,
+      sellerId
+    );
+    return sendResponse(
+      res,
+      {
+        success: true,
+        message: "Bulk medicines added successfully",
+        data: result
+      },
+      201
     );
   } catch (error) {
     next(error);
@@ -991,7 +1057,8 @@ var medicineController = {
   getMedicine: getMedicine2,
   addMedicine: addMedicine2,
   updateMedicine: updateMedicine2,
-  removeMedicine: removeMedicine2
+  removeMedicine: removeMedicine2,
+  bulkAddMedicineController
 };
 
 // src/modules/medicines/medicine.route.ts
@@ -999,6 +1066,7 @@ var router3 = express3.Router();
 router3.get("/", medicineController.getAllMedicines);
 router3.get("/:id", medicineController.getMedicine);
 router3.post("/", auth2("SELLER"), medicineController.addMedicine);
+router3.post("/bulk", auth2("SELLER"), medicineController.bulkAddMedicineController);
 router3.patch("/:id", auth2("SELLER"), medicineController.updateMedicine);
 router3.delete("/:id", auth2("SELLER"), medicineController.removeMedicine);
 
@@ -1565,78 +1633,74 @@ import express6 from "express";
 
 // src/modules/reviews/review.service.ts
 var createReview = async (payload) => {
-  const { medicineId, orderItemId, content, numberRating, userId } = payload;
-  return prisma.$transaction(async (tx) => {
-    const orderItem = await tx.order_item.findUnique({
-      where: { id: orderItemId },
-      select: {
-        id: true,
-        medicineId: true,
-        userOrderRef: {
-          select: { userId: true }
-        }
-      }
-    });
-    if (!orderItem) {
-      throw new Error("Order item not found");
-    }
-    if (orderItem.userOrderRef.userId !== userId) {
-      throw new Error("You are not allowed to review this order item");
-    }
-    if (orderItem.medicineId !== medicineId) {
-      throw new Error("Medicine does not match order item");
-    }
-    return tx.review.create({
-      data: {
-        content,
-        rating: numberRating,
-        medicineId,
-        userId,
-        order_itemId: orderItemId
-      }
-    });
+  const { medicineId, content, numberRating, userId } = payload;
+  const medicine = await prisma.medicine.findUnique({
+    where: { id: medicineId },
+    select: { id: true }
   });
+  if (!medicine) {
+    console.log("hit the medicine to the condition");
+    throw new Error("No medicine found");
+  }
+  const orderItem = await prisma.order_item.findFirst({
+    where: {
+      medicineId,
+      userOrderRef: {
+        userId
+      }
+    },
+    select: { id: true, medicineId: true }
+  });
+  if (!orderItem) {
+    throw new Error("unable to create review");
+  }
+  const creteReview = await prisma.review.create({
+    data: {
+      content,
+      rating: numberRating,
+      medicineId,
+      userId
+    }
+  });
+  return creteReview;
 };
-var getReviewsByMedicine = async (medicineId) => {
-  return prisma.review.findMany({
-    where: { medicineId },
-    orderBy: { id: "desc" },
-    include: {
-      userRef: {
-        select: {
-          id: true,
-          name: true,
-          image: true
-        }
-      }
-    }
+var isEligible = async (userId, medicineId) => {
+  console.log("hit th eserver  for find  frrist ");
+  const medicine = await prisma.medicine.findUnique({
+    where: { id: medicineId },
+    select: { id: true }
   });
-};
-var getMyReviews = async (userId) => {
-  return prisma.review.findMany({
-    where: { userId },
-    orderBy: { id: "desc" },
-    include: {
-      medicineRef: {
-        select: {
-          id: true,
-          title: true
-        }
+  if (!medicine) {
+    console.log("hit the medicine to the condition");
+    throw new Error("No medicine found");
+  }
+  console.log("hit th eserver  for find medicine", medicine);
+  const orderItem = await prisma.order_item.findFirst({
+    where: {
+      medicineId,
+      userOrderRef: {
+        userId
       }
-    }
+    },
+    select: { id: true, medicineId: true }
   });
+  console.log("hit th eserver  for get orderitem", orderItem);
+  return orderItem;
 };
 var reviewService = {
   createReview,
-  getReviewsByMedicine,
-  getMyReviews
+  isEligible
 };
 
 // src/modules/reviews/reviews.controller.ts
 var createReview2 = async (req, res, next) => {
   try {
     const { id: userId } = req.user;
-    const { medicineId, orderItemId, content, rating } = req.body;
+    const { id: medicineId } = req.params;
+    const { orderItemId, content, rating } = req.body;
+    if (!medicineId || typeof medicineId !== "string") {
+      throw new Error("server error");
+    }
     const numberRating = Number(rating);
     const review = await reviewService.createReview({
       medicineId,
@@ -1654,13 +1718,45 @@ var createReview2 = async (req, res, next) => {
     next(error);
   }
 };
+var isEligible2 = async (req, res, next) => {
+  console.log("hit th econtroller");
+  try {
+    const { id: userId } = req.user;
+    const { id: medicineId } = req.params;
+    if (!userId || typeof userId !== "string") {
+      throw new Error("Id not found");
+    }
+    if (!medicineId || typeof medicineId !== "string") {
+      throw new Error("Id not found");
+    }
+    console.log("hit the controller to the 2nd");
+    const review = await reviewService.isEligible(userId, medicineId);
+    console.log("hit the controller to the under the down");
+    if (!review) {
+      return res.status(200).json({
+        success: true,
+        message: "no review found"
+      });
+    }
+    console.log("hit the controller to the under the down  check");
+    return res.status(200).json({
+      success: true,
+      message: "get permission",
+      data: review
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 var reviewController = {
-  createReview: createReview2
+  createReview: createReview2,
+  isEligible: isEligible2
 };
 
 // src/modules/reviews/review.route.ts
 var router6 = express6.Router();
-router6.post("/", auth2(), reviewController.createReview);
+router6.get("/:id/eligibility", auth2(), reviewController.isEligible);
+router6.post("/:id", auth2("USER"), reviewController.createReview);
 
 // src/modules/statistics/statistics.routes.ts
 import express7 from "express";
@@ -1880,7 +1976,23 @@ var staticsRouter = router7;
 
 // src/app.ts
 var app = express8();
-app.use(cors({ origin: [process.env.FRONTEND_URL], credentials: true }));
+var allowedOrigins = [process.env.APP_URL, process.env.PROD_APP_URL].filter(Boolean);
+console.log("here is the array ", allowedOrigins);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOrigins.includes(origin) || /^https:\/\/next-blog-client.*\.vercel\.app$/.test(origin) || /^https:\/\/.*\.vercel\.app$/.test(origin);
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error(`Origin ${origin} not allowed by CORS`));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ["Set-Cookie"]
+}));
 app.all("/api/auth/sign-in/*splat", toNodeHandler(auth));
 app.all("/api/auth/sign-out", toNodeHandler(auth));
 app.all("/api/auth/get-session", toNodeHandler(auth));

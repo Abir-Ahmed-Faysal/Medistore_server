@@ -199,6 +199,65 @@ const addMedicine = async ({ image, title,
 }
 
 
+const bulkAddMedicine = async (
+  medicines: BulkAddMedicineDTO[],
+  sellerId: string
+) => {
+
+  if (!medicines.length) {
+    throw new Error("Medicine list is empty");
+  }
+
+  // 1️⃣ Collect unique categoryIds
+  const categoryIds = [...new Set(medicines.map(m => m.categoryId))];
+
+  // 2️⃣ Check all categories exist
+  const existingCategories = await prisma.category.findMany({
+    where: {
+      id: { in: categoryIds }
+    },
+    select: { id: true }
+  });
+
+  const existingCategoryIds = existingCategories.map(c => c.id);
+
+  const invalidCategories = categoryIds.filter(
+    id => !existingCategoryIds.includes(id)
+  );
+
+  if (invalidCategories.length > 0) {
+    throw new Error(`Invalid categoryIds: ${invalidCategories.join(", ")}`);
+  }
+
+  // 3️⃣ Prepare data
+  const formattedData = medicines.map(m => ({
+    image: m.image,
+    title: m.title,
+    description: m.description,
+    manufacturer: m.manufacturer,
+    price: Number(m.price),
+    stock: Number(m.stock),
+    categoryId: m.categoryId,
+    sellerId
+  }));
+
+  // 4️⃣ Bulk Insert
+  return prisma.medicine.createMany({
+    data: formattedData
+  });
+};
+export interface BulkAddMedicineDTO {
+  image: string;
+  title: string;
+  description: string;
+  manufacturer: string;
+  price: number;
+  stock: number;
+  categoryId: string;
+}
+
+
+
 const updateMedicine = async (
 
   id: string, sellerId: string,
@@ -233,5 +292,5 @@ const removeMedicine = async (id: string, sellerId: string): Promise<Medicine | 
 }
 
 export const medicineService = {
-  getAllMedicine, getMedicine, addMedicine, updateMedicine, removeMedicine
+  getAllMedicine, getMedicine, addMedicine, updateMedicine, removeMedicine,bulkAddMedicine
 }

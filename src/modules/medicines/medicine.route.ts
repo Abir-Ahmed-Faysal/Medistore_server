@@ -12,6 +12,8 @@ router.get('/:id',  medicineController.getMedicine);
 
 //*seller */
 router.post('/', auth("SELLER"), medicineController.addMedicine);
+
+router.post('/bulk', auth("SELLER"), medicineController.bulkAddMedicineController);
 router.patch('/:id', auth("SELLER"), medicineController.updateMedicine);
 router.delete('/:id', auth("SELLER"), medicineController.removeMedicine);
 

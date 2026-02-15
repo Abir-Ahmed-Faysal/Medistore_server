@@ -33,6 +33,48 @@ import { sendResponse } from "../../middleware/sendRes"
         }
     }
 
+    const bulkAddMedicineController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { medicines } = req.body;
+    const { id: sellerId } = req.user!;
+
+    if (!sellerId) {
+      throw new Error("Seller not found");
+    }
+
+    if (!Array.isArray(medicines) || medicines.length === 0) {
+      return sendResponse(
+        res,
+        { success: false, message: "Medicine array is required" },
+        400
+      );
+    }
+
+    const result = await medicineService.bulkAddMedicine(
+      medicines,
+      sellerId
+    );
+
+    return sendResponse(
+      res,
+      {
+        success: true,
+        message: "Bulk medicines added successfully",
+        data: result
+      },
+      201
+    );
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 
 
     const getMedicine = async (req: Request, res: Response, next: NextFunction) => {
@@ -156,5 +198,5 @@ import { sendResponse } from "../../middleware/sendRes"
 
 
     export const medicineController = {
-        getAllMedicines, getMedicine, addMedicine, updateMedicine, removeMedicine, 
+        getAllMedicines, getMedicine, addMedicine, updateMedicine, removeMedicine, bulkAddMedicineController
     }
