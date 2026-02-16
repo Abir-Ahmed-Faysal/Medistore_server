@@ -550,12 +550,14 @@ var registerUser = async ({ name, email, password, image, phone, role }) => {
   if (phone) {
     payload.phone = phone;
   }
+  if (image) {
+    payload.image = image;
+  }
   const user = await auth.api.signUpEmail({
     body: {
       name,
       email,
       password,
-      image,
       phone
     }
   });
@@ -583,6 +585,7 @@ var getCurrentUser = (req, res) => {
 var registerUser2 = async (req, res, next) => {
   try {
     const { name, email, password, image, phone, role } = req.body;
+    console.log("here is the body", req.body);
     const newUser = await registerService.registerUser({
       name,
       email,
@@ -1096,10 +1099,20 @@ var createCategory = async (category_name, icon) => {
     }
   });
 };
-var updateCategory = async (id, category_name) => {
+var updateCategory = async (id, icon, category_name) => {
+  const data = {};
+  if (icon) {
+    data.icon = icon;
+  }
+  if (category_name) {
+    data.category_name = category_name;
+  }
+  if (Object.keys(data).length === 0) {
+    throw new Error("No fields provided to update");
+  }
   return prisma.category.update({
     where: { id },
-    data: { id, category_name }
+    data
   });
 };
 var deleteCategory = async (id) => {
@@ -1141,11 +1154,8 @@ var createCategory2 = async (req, res, next) => {
 var updateCategory2 = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { category_name } = req.body;
-    if (!category_name) {
-      return res.status(400).json({ success: false, message: "Category name is required" });
-    }
-    const updatedCategory = await categoryService.updateCategory(id, category_name);
+    const { category_name, icon } = req.body;
+    const updatedCategory = await categoryService.updateCategory(id, icon, category_name);
     res.status(200).json({ success: true, message: "category data update successfully", data: updatedCategory });
   } catch (error) {
     next(error);
@@ -1257,16 +1267,6 @@ var getUserOrders = async (userId) => {
               manufacturer: true,
               categoryRef: {
                 select: { category_name: true }
-              }
-            }
-          },
-          reviews: {
-            select: {
-              id: true,
-              content: true,
-              rating: true,
-              userRef: {
-                select: { name: true }
               }
             }
           }
@@ -1472,11 +1472,20 @@ var createNewOrder2 = async (req, res, next) => {
 };
 var getUserOrders2 = async (req, res, next) => {
   try {
+    console.log("hit the controller");
     const { id: userId } = req.user;
     if (!userId) {
       return sendResponse(res, { success: false, message: "Unauthorized" }, 401);
     }
+    console.log("hit the controller down check ==>");
     const orders = await orderService.getUserOrders(userId);
+    if (!orders) {
+      return sendResponse(
+        res,
+        { success: false, message: "Orders fetch failed" },
+        400
+      );
+    }
     return sendResponse(
       res,
       { success: true, message: "Orders fetched successfully", data: orders },
@@ -1719,7 +1728,6 @@ var createReview2 = async (req, res, next) => {
   }
 };
 var isEligible2 = async (req, res, next) => {
-  console.log("hit th econtroller");
   try {
     const { id: userId } = req.user;
     const { id: medicineId } = req.params;
@@ -1729,16 +1737,13 @@ var isEligible2 = async (req, res, next) => {
     if (!medicineId || typeof medicineId !== "string") {
       throw new Error("Id not found");
     }
-    console.log("hit the controller to the 2nd");
     const review = await reviewService.isEligible(userId, medicineId);
-    console.log("hit the controller to the under the down");
     if (!review) {
       return res.status(200).json({
         success: true,
         message: "no review found"
       });
     }
-    console.log("hit the controller to the under the down  check");
     return res.status(200).json({
       success: true,
       message: "get permission",

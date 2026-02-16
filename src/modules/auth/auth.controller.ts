@@ -18,8 +18,7 @@ const registerUser = async (req: Request, res: Response, next: NextFunction) => 
   try {
     const {name, email, password,image,phone ,role} = req.body;
 
-    
-
+  
     const newUser = await registerService.registerUser({
 name, email, password,image,phone,role
     });

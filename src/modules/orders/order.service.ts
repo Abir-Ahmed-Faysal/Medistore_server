@@ -128,16 +128,6 @@ const getUserOrders = async (userId: string) => {
               },
             },
           },
-          reviews: {
-            select: {
-              id: true,
-              content: true,
-              rating: true,
-              userRef: {
-                select: { name: true },
-              },
-            },
-          },
         },
       },
     },

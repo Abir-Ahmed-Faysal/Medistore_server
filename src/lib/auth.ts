@@ -20,7 +20,8 @@ export const auth = betterAuth({
                 required: false
             }
         }
-    }, session: {
+    },
+     session: {
         cookieCache: { enabled: true, maxAge: 5 * 60 },
         advanced: {
             cookiePrefix: "better-auth",

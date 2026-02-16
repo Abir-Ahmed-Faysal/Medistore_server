@@ -12,7 +12,8 @@ type RegisterDTO = {
 
 type CreateUserPayload = {
     role: "USER" | "SELLER"
-    phone?: string
+    phone?: string,
+    image?:string
 }
 
 const registerUser = async ({ name, email, password, image, phone, role }: RegisterDTO) => {
@@ -33,9 +34,13 @@ const registerUser = async ({ name, email, password, image, phone, role }: Regis
         payload.phone = phone
     }
 
+    if(image){
+      payload.image=image
+    }
+
     const user = await auth.api.signUpEmail({
         body: {
-            name, email, password, image, phone
+            name, email, password, phone
         },
     });
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import { orderController } from './order.controller';
 import { auth } from '../../middleware/auth';
+import { hitApi } from '../../middleware/hitApi';
 
 
 const router = express.Router();

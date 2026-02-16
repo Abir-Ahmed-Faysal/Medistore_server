@@ -33,13 +33,9 @@ const createCategory = async (req: Request, res: Response, next: NextFunction) =
 const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const { category_name } = req.body;
-
-        if (!category_name) {
-            return res.status(400).json({ success: false, message: "Category name is required" });
-        }
-
-        const updatedCategory = await categoryService.updateCategory(id as string, category_name);
+        const { category_name,icon } = req.body;
+  
+ const updatedCategory = await categoryService.updateCategory(id as string,icon, category_name);
         res.status(200).json({ success: true, message: "category data update successfully", data: updatedCategory });
     } catch (error: any) {
         next(error)

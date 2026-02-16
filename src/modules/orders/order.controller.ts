@@ -21,7 +21,7 @@ export const createNewOrder = async (
         const { id: userId } = req.user as { id: string };
 
         const payload = req.body
-       
+
 
         const { address, items, quantity } = payload;
 
@@ -60,15 +60,26 @@ export const getUserOrders = async (
     next: NextFunction
 ) => {
     try {
-      
+        console.log("hit the controller");
+
         const { id: userId } = req.user as { id: string };
 
         if (!userId) {
             return sendResponse(res, { success: false, message: "Unauthorized" }, 401);
         }
+        console.log("hit the controller down check ==>");
 
         const orders = await orderService.getUserOrders(userId);
 
+
+        if(!orders){
+             return sendResponse(
+            res,
+            { success: false, message: "Orders fetch failed",  },
+            400
+        );
+        }
+       
 
         return sendResponse(
             res,
@@ -91,7 +102,7 @@ const getOrderDetails = async (
     try {
         const { id: userId } = req.user as { id: string };
         const { id: orderId } = req.params;
-        
+
 
         if (!orderId || typeof orderId !== "string") {
             return sendResponse(
@@ -151,16 +162,16 @@ const getSellerOrders = async (req: Request, res: Response) => {
     try {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 20;
-        const rawStatus=req.query.status
+        const rawStatus = req.query.status
 
         const status: OrderStatus | undefined =
-      typeof rawStatus === "string" &&
-      ORDER_STATUSES.includes(rawStatus.toUpperCase() as OrderStatus)
-        ? (rawStatus.toUpperCase() as OrderStatus)
-        : undefined;
+            typeof rawStatus === "string" &&
+                ORDER_STATUSES.includes(rawStatus.toUpperCase() as OrderStatus)
+                ? (rawStatus.toUpperCase() as OrderStatus)
+                : undefined;
 
 
-        const orders = await orderService.getSellerOrders({ page, limit,status });
+        const orders = await orderService.getSellerOrders({ page, limit, status });
 
         res.status(200).json({
             success: true,
@@ -223,11 +234,11 @@ const updateOrderStatusBySeller = async (
     next: NextFunction
 ) => {
     try {
-       
+
         const { id: orderId } = req.params;
         const status = req.body.status as ORDER_STATUS;
 
-       
+
 
         if (!orderId || !Object.values(ORDER_STATUS).includes(status)) {
             return sendResponse(res, { success: false, message: "Invalid input" }, 400);
@@ -241,7 +252,7 @@ const updateOrderStatusBySeller = async (
             );
         }
 
-     
+
 
         const updatedOrder = await orderService.updateOrderStatus(
             orderId as string,
